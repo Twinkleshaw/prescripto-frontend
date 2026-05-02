@@ -16,7 +16,7 @@ export const useAuth = () => {
       const { data } = await loginApi(credentials);
 
       // Adjust these keys to match your API response
-      const { token, role, user } = data;
+      const { token, role, user } = data.data;
 
       setAuth(user, token, role);
 

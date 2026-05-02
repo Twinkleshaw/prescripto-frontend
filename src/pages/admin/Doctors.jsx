@@ -179,14 +179,14 @@ export default function AdminDoctors() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">
-                        {doc.name}
+                        {doc?.name}
                       </p>
                       <p className="text-xs text-gray-400">{doc.email}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
-                  {doc?.specialty}
+                  {doc?.speciality}
                 </td>
                 <td className="px-4 py-3">
                   <span

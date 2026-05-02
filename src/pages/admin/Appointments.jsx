@@ -208,12 +208,12 @@ export default function AdminAppointments() {
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-2xl font-bold text-gray-900">All Appointments</h1>
         <div className="flex gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+          {/* <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
             <Download size={13} /> Export Data
           </button>
           <button className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-dark rounded-xl transition-colors">
             <Plus size={13} /> New Appointment
-          </button>
+          </button> */}
         </div>
       </div>
 

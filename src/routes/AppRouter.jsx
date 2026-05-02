@@ -42,6 +42,7 @@ export default function AppRouter() {
           }
         >
           <Route path="dashboard" element={<DoctorDashboard />} />
+          {/* <Route path="appointments" element={<DoctorAppointments />} /> */}
           {/* Add doctor pages here as nested routes */}
         </Route>
 
