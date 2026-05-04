@@ -8,6 +8,7 @@ import Login from "../pages/auth/login";
 import AdminDoctors from "../pages/admin/Doctors";
 import AdminPatients from "../pages/admin/Patients";
 import AdminAppointments from "../pages/admin/Appointments";
+import DoctorProfile from "../pages/doctor/Profile";
 
 export default function AppRouter() {
   return (
@@ -42,7 +43,7 @@ export default function AppRouter() {
           }
         >
           <Route path="dashboard" element={<DoctorDashboard />} />
-          {/* <Route path="appointments" element={<DoctorAppointments />} /> */}
+          <Route path="settings" element={<DoctorProfile />} />
           {/* Add doctor pages here as nested routes */}
         </Route>
 

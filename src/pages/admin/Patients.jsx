@@ -152,10 +152,10 @@ export default function AdminPatients() {
                 <tr className="bg-gray-50 border-b border-gray-100">
                   {[
                     "Patient Name",
-                    "Invoice ID",
+                    "Phone Number",
                     "Date",
-                    "Doctor",
-                    "Status",
+                    // "Doctor",
+                    // "Status",
                     "Action",
                   ].map((h) => (
                     <th
@@ -205,9 +205,8 @@ export default function AdminPatients() {
                         </div>
                       </td>
 
-                      {/* Invoice */}
                       <td className="px-4 py-3 text-xs font-mono text-gray-500">
-                        {p.invoiceId || "—"}
+                        {p?.phone || "—"}
                       </td>
 
                       {/* Date */}
@@ -216,7 +215,7 @@ export default function AdminPatients() {
                       </td>
 
                       {/* Doctor */}
-                      <td className="px-4 py-3">
+                      {/* <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[9px] font-bold text-gray-500 shrink-0">
                             {getInitials(p.doctorName || "Dr")}
@@ -225,10 +224,10 @@ export default function AdminPatients() {
                             {p.doctorName || "—"}
                           </span>
                         </div>
-                      </td>
+                      </td> */}
 
                       {/* Status */}
-                      <td className="px-4 py-3">
+                      {/* <td className="px-4 py-3">
                         {p.status ? (
                           <span
                             className={clsx(
@@ -242,7 +241,7 @@ export default function AdminPatients() {
                         ) : (
                           <span className="text-xs text-gray-300">—</span>
                         )}
-                      </td>
+                      </td> */}
                       <td className="px-4 py-3">
                         <button
                           onClick={(e) => {
