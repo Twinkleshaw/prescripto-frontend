@@ -54,12 +54,12 @@ export default function AdminDoctors() {
           Practitioner Registry
         </h1>
         <div className="flex gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          {/* <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
             <Download size={13} /> Export CSV
           </button>
           <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
             <SlidersHorizontal size={13} /> Filters
-          </button>
+          </button> */}
           <button
             onClick={() => setAddModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-dark rounded-lg transition-colors"

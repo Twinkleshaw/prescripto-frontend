@@ -9,3 +9,5 @@ export const updateDoctor = (id, data) =>
 
 export const doctorUpdateProfile = (id, data) =>
   api.put(`/doctor/update-profile`, data);
+
+export const getDoctorDashboardApi = () => api.get("/doctor/dashboard");

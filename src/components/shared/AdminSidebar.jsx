@@ -1,20 +1,27 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Users, UserRound, CalendarDays,
-  DollarSign, FileText, BarChart2, Settings, LogOut
+  LayoutDashboard,
+  Users,
+  UserRound,
+  CalendarDays,
+  DollarSign,
+  FileText,
+  BarChart2,
+  Settings,
+  LogOut,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import clsx from "clsx";
 
 const navItems = [
-  { label: "Dashboard",    icon: LayoutDashboard, to: "/admin/dashboard" },
-  { label: "Doctors",      icon: Users,           to: "/admin/doctors" },
-  { label: "Patients",     icon: UserRound,       to: "/admin/patients" },
-  { label: "Appointments", icon: CalendarDays,    to: "/admin/appointments" },
-  { label: "Financials",   icon: DollarSign,      to: "/admin/financials" },
-  { label: "Invoices",     icon: FileText,        to: "/admin/invoices" },
-  { label: "Reports",      icon: BarChart2,       to: "/admin/reports" },
-  { label: "Settings",     icon: Settings,        to: "/admin/settings" },
+  { label: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard" },
+  { label: "Doctors", icon: Users, to: "/admin/doctors" },
+  { label: "Patients", icon: UserRound, to: "/admin/patients" },
+  { label: "Appointments", icon: CalendarDays, to: "/admin/appointments" },
+  // { label: "Financials",   icon: DollarSign,      to: "/admin/financials" },
+  // { label: "Invoices",     icon: FileText,        to: "/admin/invoices" },
+  // { label: "Reports",      icon: BarChart2,       to: "/admin/reports" },
+  // { label: "Settings",     icon: Settings,        to: "/admin/settings" },
 ];
 
 export default function AdminSidebar() {
@@ -26,8 +33,13 @@ export default function AdminSidebar() {
     navigate("/login");
   };
 
-  const initials = user?.name
-    ?.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "AD";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "AD";
 
   return (
     <aside className="w-56 bg-white border-r border-gray-100 flex flex-col shrink-0 h-screen">
@@ -39,8 +51,12 @@ export default function AdminSidebar() {
           </svg>
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 leading-none">Prescripto</p>
-          <p className="text-[10px] text-gray-400 tracking-wide mt-0.5">MEDICAL GROUP</p>
+          <p className="text-sm font-bold text-gray-900 leading-none">
+            Prescripto
+          </p>
+          <p className="text-[10px] text-gray-400 tracking-wide mt-0.5">
+            MEDICAL GROUP
+          </p>
         </div>
       </div>
 
@@ -55,13 +71,16 @@ export default function AdminSidebar() {
                 "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 isActive
                   ? "bg-teal-50 text-primary font-semibold"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900",
               )
             }
           >
             {({ isActive }) => (
               <>
-                <Icon size={16} className={isActive ? "text-primary" : "text-gray-400"} />
+                <Icon
+                  size={16}
+                  className={isActive ? "text-primary" : "text-gray-400"}
+                />
                 <span>{label}</span>
                 {isActive && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />
@@ -79,8 +98,12 @@ export default function AdminSidebar() {
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900 truncate">{user?.name || "Admin"}</p>
-            <p className="text-[10px] text-gray-400 truncate">{user?.email || "Chief Administrator"}</p>
+            <p className="text-xs font-semibold text-gray-900 truncate">
+              {user?.name || "Admin"}
+            </p>
+            <p className="text-[10px] text-gray-400 truncate">
+              {user?.email || "Chief Administrator"}
+            </p>
           </div>
         </div>
         <button
