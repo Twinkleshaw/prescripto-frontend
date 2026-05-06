@@ -7,7 +7,7 @@ export const createDoctor = (data) => api.post("/auth/create-doctor", data);
 export const updateDoctor = (id, data) =>
   api.put(`/admin/update-doctor/${id}`, data);
 
-export const doctorUpdateProfile = (id, data) =>
+export const doctorUpdateProfile = (data) =>
   api.put(`/doctor/update-profile`, data);
 
 export const getDoctorDashboardApi = () => api.get("/doctor/dashboard");

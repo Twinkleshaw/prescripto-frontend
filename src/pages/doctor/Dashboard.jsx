@@ -143,15 +143,7 @@ export default function DoctorDashboard() {
   });
 
   const d = data?.data;
-
-  // Derive payment breakdown from payments array
-  // payments = [{ _id: "pay_at_clinic", count: 8 }, { _id: "online", count: 3 }]
-  const offlineCount =
-    d?.payments?.find((p) => p._id === "pay_at_clinic")?.count ?? 0;
-  const onlineCount =
-    d?.payments
-      ?.filter((p) => p._id !== "pay_at_clinic")
-      ?.reduce((sum, p) => sum + p.count, 0) ?? 0;
+  console.log(d);
 
   // ── Cancel ────────────────────────────────────────────
   const { mutate: cancelMutate } = useMutation({
@@ -184,6 +176,7 @@ export default function DoctorDashboard() {
       </div>
 
       {/* ── Stats Row ── */}
+      {/* ── Stats Row ── */}
       <div className="grid grid-cols-4 gap-4 mb-5">
         <StatCard
           icon={UserRound}
@@ -198,18 +191,18 @@ export default function DoctorDashboard() {
           icon={CalendarDays}
           iconBg="bg-orange-50"
           iconColor="text-orange-500"
-          label="Total Appointments"
-          value={d?.totalAppointments?.toLocaleString()}
-          sub="All time"
+          label="Today's Appointments"
+          value={d?.todayAppointments?.toLocaleString()}
+          sub="Scheduled today"
           loading={isLoading}
         />
         <StatCard
           icon={Clock}
           iconBg="bg-blue-50"
           iconColor="text-blue-500"
-          label="Today's Appointments"
-          value={d?.todayAppointments?.toLocaleString()}
-          sub="Scheduled today"
+          label="Today's Earnings"
+          value={d?.todayEarnings?.toLocaleString()}
+          sub="Digital payments"
           loading={isLoading}
         />
         <StatCard
@@ -217,90 +210,10 @@ export default function DoctorDashboard() {
           iconBg="bg-green-50"
           iconColor="text-green-500"
           label="Total Earnings"
-          value={fmtMoney(d?.totalEarnings)}
-          sub="Completed payments"
+          value={d?.totalEarnings}
+          sub="Cash collected"
           loading={isLoading}
         />
-      </div>
-
-      {/* ── Earnings breakdown + Payment type ── */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
-        {/* Today's earnings — teal hero card */}
-        <div className="bg-primary rounded-2xl p-5">
-          <p className="text-[10px] font-bold text-teal-300 tracking-widest uppercase mb-2">
-            Overall Earnings
-          </p>
-          {isLoading ? (
-            <Skeleton className="h-8 w-32 mb-4 bg-teal-600" />
-          ) : (
-            <p className="text-3xl font-bold text-white mb-4">
-              {fmtMoney(d?.totalEarnings)}
-            </p>
-          )}
-          <div className="flex gap-8">
-            <div>
-              <p className="text-[9px] text-teal-300 uppercase tracking-wider font-bold">
-                Cash
-              </p>
-              <p className="text-sm font-semibold text-white mt-0.5">
-                {isLoading ? "—" : `${offlineCount} bookings`}
-              </p>
-            </div>
-            <div>
-              <p className="text-[9px] text-teal-300 uppercase tracking-wider font-bold">
-                Online
-              </p>
-              <p className="text-sm font-semibold text-white mt-0.5">
-                {isLoading ? "—" : `${onlineCount} bookings`}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment type breakdown */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5">
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-4">
-            Payment Methods
-          </p>
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-3/4" />
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {(d?.payments ?? []).map((p) => {
-                const totalCount =
-                  d?.payments?.reduce((s, x) => s + x.count, 0) || 1;
-                const pct = Math.round((p.count / totalCount) * 100);
-                return (
-                  <div key={p._id}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-gray-700">
-                        {PAY_TYPE[p._id] ?? p._id}
-                      </span>
-                      <span className="text-xs font-bold text-gray-900">
-                        {p.count}{" "}
-                        <span className="text-gray-400 font-normal">
-                          bookings
-                        </span>
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-gray-100 rounded-full">
-                      <div
-                        className="h-1.5 bg-primary rounded-full transition-all"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-              {(!d?.payments || d.payments.length === 0) && (
-                <p className="text-xs text-gray-400">No payment data</p>
-              )}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* ── Latest Bookings ── */}

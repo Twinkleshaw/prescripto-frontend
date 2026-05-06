@@ -68,6 +68,8 @@ export default function DoctorProfile() {
     googleMapLink: "",
   });
 
+  console.log(user);
+
   // Pre-fill from user store
   useEffect(() => {
     if (!user) return;
@@ -121,7 +123,7 @@ export default function DoctorProfile() {
   ];
 
   return (
-    <div className="max-w-2xl">
+    <div className="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Profile Management</h1>
         <p className="text-sm text-gray-400 mt-1">
