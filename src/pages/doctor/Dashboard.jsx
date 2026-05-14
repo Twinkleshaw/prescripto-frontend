@@ -57,25 +57,22 @@ const AVATAR_COLORS = [
 
 const APPT_STATUS = {
   completed: {
-    label: "Completed",
-    cls: "bg-teal-50 text-primary",
-    dot: "bg-primary",
+    label: "COMPLETED",
+    cls: "bg-[#0068601A] text-[#006860]",
   },
   booked: {
-    label: "Pending",
+    label: "PENDING",
     cls: "bg-amber-50 text-amber-600",
-    dot: "bg-amber-400",
   },
   cancelled: {
-    label: "Cancelled",
-    cls: "bg-red-50 text-red-500",
-    dot: "bg-red-400",
+    label: "CANCELLED",
+    cls: "bg-[#FFDAD6] text-[#93000A]",
   },
 };
 
 const PAY_STATUS = {
-  paid: { label: "Paid", cls: "bg-teal-50 text-primary" },
-  pending: { label: "Pending", cls: "bg-amber-50 text-amber-600" },
+  paid: { label: "Paid", cls: "bg-[#DCFCE7] text-[#15803D]" },
+  pending: { label: "Pending", cls: "bg-[#FEF3C7] text-[#B45309]" },
 };
 
 const PAY_TYPE = {
@@ -134,7 +131,7 @@ export default function DoctorDashboard() {
   const queryClient = useQueryClient();
   const [actioningId, setActioningId] = useState(null);
 
-  const firstName = user?.name?.split(" ")[0] || "Doctor";
+  const firstName = user?.name;
 
   // ── Fetch dashboard ───────────────────────────────────
   const { data, isLoading, isError } = useQuery({
@@ -171,7 +168,7 @@ export default function DoctorDashboard() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Clinic Overview</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Welcome back, Dr. {firstName}. Here is what's happening today.
+          Welcome back, {firstName}. Here is what's happening today.
         </p>
       </div>
 
@@ -245,7 +242,7 @@ export default function DoctorDashboard() {
                 {[
                   "Patient",
                   "Date & Time",
-                  "Token",
+                  // "Token",
                   "Payment",
                   "Status",
                   "Actions",
@@ -274,7 +271,6 @@ export default function DoctorDashboard() {
                   const apptStatus = APPT_STATUS[appt.status] || {
                     label: appt.status,
                     cls: "bg-gray-100 text-gray-500",
-                    dot: "bg-gray-400",
                   };
                   const payStatus = PAY_STATUS[appt.paymentStatus] || {
                     label: appt.paymentStatus,
@@ -325,20 +321,17 @@ export default function DoctorDashboard() {
                       </td>
 
                       {/* Token */}
-                      <td className="px-5 py-3.5">
+                      {/* <td className="px-5 py-3.5">
                         <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-lg">
                           #{appt.tokenNumber ?? "—"}
                         </span>
-                      </td>
+                      </td> */}
 
                       {/* Payment */}
-                      <td className="px-5 py-3.5">
-                        <p className="text-xs font-medium text-gray-700">
-                          {PAY_TYPE[appt.paymentType] ?? appt.paymentType}
-                        </p>
+                      <td className="px-4 py-3.5">
                         <span
                           className={clsx(
-                            "inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full mt-0.5",
+                            "inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full",
                             payStatus.cls,
                           )}
                         >
@@ -355,12 +348,6 @@ export default function DoctorDashboard() {
                             apptStatus.cls,
                           )}
                         >
-                          <span
-                            className={clsx(
-                              "w-1.5 h-1.5 rounded-full",
-                              apptStatus.dot,
-                            )}
-                          />
                           {apptStatus.label}
                         </span>
                       </td>

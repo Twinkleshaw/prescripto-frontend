@@ -12,8 +12,13 @@ function getFormattedDate() {
 export default function DoctorNavbar() {
   const { user } = useAuthStore();
 
-  const initials = user?.name
-    ?.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "DR";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "DR";
 
   return (
     <header className="h-14 bg-white border-b border-gray-100 flex items-center px-5 gap-3 shrink-0">
@@ -59,7 +64,9 @@ export default function DoctorNavbar() {
             <line x1="8" y1="2" x2="8" y2="6" />
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
-          <span className="text-xs font-medium text-gray-700">{getFormattedDate()}</span>
+          <span className="text-xs font-medium text-gray-700">
+            {getFormattedDate()}
+          </span>
         </div>
 
         {/* Profile chip */}
@@ -68,15 +75,19 @@ export default function DoctorNavbar() {
             {initials}
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-900 leading-none">{user?.name || "Doctor"}</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">{user?.specialization || "Specialist"}</p>
+            <p className="text-xs font-semibold text-gray-900 leading-none">
+              {user?.name || "Doctor"}
+            </p>
+            <p className="text-[10px] text-gray-400 mt-0.5">
+              {user?.specialization || "Specialist"}
+            </p>
           </div>
         </div>
 
         {/* FAB — quick action */}
-        <button className="w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-primary-dark transition-colors shadow-sm">
+        {/* <button className="w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-primary-dark transition-colors shadow-sm">
           <Plus size={18} className="text-white" strokeWidth={2.5} />
-        </button>
+        </button> */}
       </div>
     </header>
   );

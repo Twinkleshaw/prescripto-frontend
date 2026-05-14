@@ -18,15 +18,15 @@ import {
 const STATUS_MAP = {
   completed: {
     label: "Completed",
-    cls: "bg-teal-50 text-primary border-teal-200",
+    cls: "bg-[#DCFCE7] text-[#15803D] border-[#DCFCE7]",
   },
   booked: {
     label: "Pending",
-    cls: "bg-amber-50 text-amber-600 border-amber-200",
+    cls: "bg-[#FEF3C7] text-[#B45309] border-[#FEF3C7]",
   },
   cancelled: {
     label: "Cancelled",
-    cls: "bg-red-50 text-red-500 border-red-200",
+    cls: "bg-[#FEE2E2] text-[#B91C1C] border-[#FEE2E2]",
   },
 };
 

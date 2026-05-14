@@ -54,25 +54,22 @@ const AVATAR_COLORS = [
 
 const APPT_STATUS = {
   completed: {
-    label: "Completed",
-    cls: "bg-teal-50 text-primary",
-    dot: "bg-primary",
+    label: "COMPLETED",
+    cls: "bg-[#0068601A] text-[#006860]",
   },
   booked: {
-    label: "Pending",
+    label: "PENDING",
     cls: "bg-amber-50 text-amber-600",
-    dot: "bg-amber-400",
   },
   cancelled: {
-    label: "Cancelled",
-    cls: "bg-red-50 text-red-500",
-    dot: "bg-red-400",
+    label: "CANCELLED",
+    cls: "bg-[#FFDAD6] text-[#93000A]",
   },
 };
 
 const PAY_STATUS = {
-  paid: { label: "Paid", cls: "bg-teal-50 text-primary" },
-  pending: { label: "Pending", cls: "bg-amber-50 text-amber-600" },
+  paid: { label: "Paid", cls: "bg-[#DCFCE7] text-[#15803D]" },
+  pending: { label: "Pending", cls: "bg-[#FEF3C7] text-[#B45309]" },
 };
 
 const PAY_TYPE = {
@@ -270,9 +267,9 @@ export default function DoctorAppointments() {
               <tr className="bg-gray-50 border-b border-gray-100">
                 {[
                   "Patient",
-                  "Date & Time",
-                  "Token",
-                  "Payment Mode",
+                  "Date",
+                  "Time",
+                  "Specialization",
                   "Payment Status",
                   "Status",
                   "Actions",
@@ -301,7 +298,6 @@ export default function DoctorAppointments() {
                   const apptStatus = APPT_STATUS[appt.status] || {
                     label: appt.status,
                     cls: "bg-gray-100 text-gray-500",
-                    dot: "bg-gray-400",
                   };
                   const payStatus = PAY_STATUS[appt.paymentStatus] || {
                     label: appt.paymentStatus,
@@ -346,24 +342,34 @@ export default function DoctorAppointments() {
                         <p className="text-sm font-medium text-gray-800">
                           {fmtDate(appt.date)}
                         </p>
-                        <p className="text-[10px] text-gray-400">
-                          {fmtTime(appt.time)}
-                        </p>
                       </td>
 
                       {/* Token */}
-                      <td className="px-4 py-3.5">
-                        <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg">
-                          #{appt.tokenNumber ?? "—"}
-                        </span>
+                      <td className="px-4 py-4 min-w-[90px]">
+                        <div className="flex items-center gap-2 text-primary font-semibold whitespace-nowrap">
+                          <Clock size={13} className="shrink-0" />
+                          <span className="text-sm">{fmtTime(appt.time)}</span>
+                        </div>
                       </td>
 
                       {/* Payment Mode */}
-                      <td className="px-4 py-3.5">
-                        <span className="text-xs font-medium text-gray-700">
-                          {PAY_TYPE[appt.paymentType] ??
-                            appt.paymentType ??
-                            "—"}
+                      <td className="px-4 py-4 min-w-[170px]">
+                        <span
+                          className="
+      inline-flex
+      items-center
+      justify-center
+      whitespace-nowrap
+      px-3
+      py-1.5
+      rounded-full
+      text-xs
+      font-semibold
+      bg-gray-100
+      text-gray-700
+    "
+                        >
+                          {appt?.doctorId?.speciality || "General"}
                         </span>
                       </td>
 
@@ -388,12 +394,6 @@ export default function DoctorAppointments() {
                             apptStatus.cls,
                           )}
                         >
-                          <span
-                            className={clsx(
-                              "w-1.5 h-1.5 rounded-full",
-                              apptStatus.dot,
-                            )}
-                          />
                           {apptStatus.label}
                         </span>
                       </td>

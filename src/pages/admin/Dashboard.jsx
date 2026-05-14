@@ -23,6 +23,24 @@ function fmtDate(d) {
   });
 }
 
+const SPECIALITY_COLORS = [
+  "bg-blue-100 text-blue-700",
+  "bg-teal-100 text-teal-700",
+  "bg-indigo-100 text-indigo-700",
+  "bg-pink-100 text-pink-700",
+  "bg-orange-100 text-orange-700",
+  "bg-purple-100 text-purple-700",
+  "bg-cyan-100 text-cyan-700",
+];
+
+function getSpecialityColor(speciality = "") {
+  const index =
+    speciality.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+    SPECIALITY_COLORS.length;
+
+  return SPECIALITY_COLORS[index];
+}
+
 function fmtTime(t) {
   if (!t) return "";
   const [h, m] = t.split(":");
@@ -39,21 +57,21 @@ const AVATAR_COLORS = [
 ];
 
 const STATUS_STYLES = {
-  completed: "bg-teal-50 text-primary",
-  booked: "bg-amber-50 text-amber-600",
-  cancelled: "bg-red-50 text-red-500",
+  completed: "bg-[#ECFDF5] text-[#059669]",
+  booked: "bg-[#FFF7ED] text-[#EA580C]",
+  cancelled: "bg-[#FEF2F2] text-[#DC2626]",
 };
 
 const STATUS_LABELS = {
-  completed: "Confirmed",
+  completed: "Completed",
   booked: "Pending",
   cancelled: "Cancelled",
 };
 
 const STATUS_DOTS = {
-  completed: "bg-primary",
-  booked: "bg-amber-400",
-  cancelled: "bg-red-400",
+  completed: "bg-[#059669]",
+  booked: "bg-[#EA580C]",
+  cancelled: "bg-[#DC2626]",
 };
 
 // ── Stat Card ─────────────────────────────────────────────
@@ -178,6 +196,7 @@ export default function AdminDashboard() {
                 {[
                   "Patient Name",
                   "Doctor",
+                  "Department",
                   "Date & Time",
                   "Status",
                   "Action",
@@ -205,7 +224,8 @@ export default function AdminDashboard() {
                 recentAppointments.map((appt, idx) => {
                   const name =
                     appt.patientName || appt.patientId?.name || "Patient";
-                  const isCancelled = appt.status === "cancelled";
+                  const isCancelled =
+                    appt.status === "cancelled" || appt.status === "completed";
                   const isActioning = cancellingId === appt._id;
                   const statusStyle =
                     STATUS_STYLES[appt.status] || "bg-gray-100 text-gray-500";
@@ -247,6 +267,17 @@ export default function AdminDashboard() {
                       {/* Doctor */}
                       <td className="px-5 py-3 text-sm text-gray-700">
                         {appt.doctorId?.name || "—"}
+                      </td>
+
+                      <td className="px-5 py-3">
+                        <span
+                          className={clsx(
+                            "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold",
+                            getSpecialityColor(appt.doctorId?.speciality),
+                          )}
+                        >
+                          {appt.doctorId?.speciality || "—"}
+                        </span>
                       </td>
 
                       {/* Date & Time */}
