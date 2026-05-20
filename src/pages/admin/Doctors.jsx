@@ -10,7 +10,11 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { doctorList, deleteDoctor } from "../../api/endpoints/doctor";
+import {
+  doctorList,
+  deleteDoctor,
+  exportDoctorsCSV,
+} from "../../api/endpoints/doctor";
 import AddDoctorModal from "../../components/admin/AddDoctorModal";
 import EditDoctorModal from "../../components/admin/EditDoctorModal";
 import doctorImg from "../../assets/doctor.png";
@@ -32,6 +36,28 @@ export default function AdminDoctors() {
   const total = data?.data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
+  const handleExport = async () => {
+    try {
+      const response = await exportDoctorsCSV();
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.setAttribute("download", "doctors-report.csv");
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const {
     mutate: handleDelete,
     isPending,
@@ -46,20 +72,22 @@ export default function AdminDoctors() {
   return (
     <div>
       {/* Header */}
-      <p className="text-xs font-bold text-primary tracking-widest uppercase mb-1">
-        Management
-      </p>
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Practitioner Registry
-        </h1>
+      <div className="flex items-start justify-between mb-5">
+        <div>
+          <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mb-1">
+            Management
+          </p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Practitioner Registry
+          </h1>
+        </div>
         <div className="flex gap-2">
-          {/* <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-[#E6E8EA] border border-gray-200 rounded-xl "
+          >
             <Download size={13} /> Export CSV
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <SlidersHorizontal size={13} /> Filters
-          </button> */}
           <button
             onClick={() => setAddModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-dark rounded-lg transition-colors"
@@ -68,34 +96,39 @@ export default function AdminDoctors() {
           </button>
         </div>
       </div>
+      {/* Summary stats — separate cards with hover green left border */}
+      <div className="grid grid-cols-3 gap-3 mb-5">
+        {/* Total Specialists */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Total Specialists
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-gray-900">{total}</p>
+          </div>
+        </div>
 
-      {/* Summary stats */}
-      <div className="grid grid-cols-3 bg-white border border-gray-200 rounded-2xl overflow-hidden mb-5 divide-x divide-gray-100">
-        <div className="px-5 py-4">
-          <p className="text-xs text-gray-400 font-medium mb-1">
-            Total Doctors
+        {/* Active Surgeons */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Active Surgeons
           </p>
-          <p className="text-xl font-bold text-gray-900">{total}</p>
-        </div>
-        <div className="px-5 py-4">
-          <p className="text-xs text-gray-400 font-medium mb-1">Active</p>
-          <p className="text-xl font-bold text-gray-900">
-            {doctors.filter((d) => d.isActive).length}
-            <span className="text-xs text-gray-400 font-normal ml-1">
-              this page
-            </span>
-          </p>
-        </div>
-        <div className="px-5 py-4">
-          <p className="text-xs text-gray-400 font-medium mb-1">
-            Available Now
-          </p>
-          <p className="text-xl font-bold text-gray-900">
+          <p className="text-2xl font-bold text-gray-900">
             {doctors.filter((d) => d.availabilityStatus).length}
-            <span className="text-xs text-gray-400 font-normal ml-1">
-              this page
-            </span>
           </p>
+          {/* <p className="text-xs text-gray-400 mt-1">Capacity 88%</p> */}
+        </div>
+
+        {/* Monthly Revenue */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Monthly Revenue
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-gray-900">
+              ₹{data?.data?.totalRevenue}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -112,19 +145,19 @@ export default function AdminDoctors() {
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
+              <tr className="bg-[#F2F4F6]">
                 {[
                   "Doctor Name",
-                  "Speciality",
-                  "City",
-                  "Experience",
-                  "Fees",
+                  "Specialization",
                   "Status",
+                  "Appointments",
+                  "Earnings",
+
                   "Actions",
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3"
+                    className="text-left text-[11px] font-semibold text-[#64748B] uppercase tracking-wider px-4 py-3"
                   >
                     {h}
                   </th>
@@ -155,8 +188,8 @@ export default function AdminDoctors() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img
-                            src={doc.image || doctorImg}
-                            alt={doc.name}
+                            src={doc?.image || doctorImg}
+                            alt={doc?.name}
                             className="w-9 h-9 rounded-full object-cover shrink-0 border border-gray-100"
                           />
                           <div>
@@ -170,37 +203,35 @@ export default function AdminDoctors() {
                       <td className="px-4 py-3 text-sm text-gray-600">
                         {doc.speciality || "—"}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {doc.address?.city || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {doc.experience || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-800">
-                        {doc.fees ? `₹${doc.fees}` : "—"}
-                      </td>
                       <td className="px-4 py-3">
                         <span
                           className={clsx(
                             "inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full",
                             doc.isActive && doc.availabilityStatus
                               ? "bg-teal-50 text-primary"
-                              : "bg-gray-100 text-gray-500",
+                              : "bg-red-100 text-red-500",
                           )}
                         >
                           <span
                             className={clsx(
                               "w-1.5 h-1.5 rounded-full",
-                              doc.isActive && doc.availabilityStatus
+                              doc?.isActive && doc?.availabilityStatus
                                 ? "bg-primary"
-                                : "bg-gray-400",
+                                : "bg-red-400",
                             )}
                           />
-                          {doc.isActive && doc.availabilityStatus
+                          {doc?.isActive && doc?.availabilityStatus
                             ? "Active"
-                            : "Inactive"}
+                            : "Pause"}
                         </span>
                       </td>
+                      <td className="px-8  py-3 text-sm text-gray-600">
+                        <b>{doc?.totalAppointments ?? 0}</b>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        <b>₹{doc?.totalRevenue ?? 0}</b>
+                      </td>
+
                       <td className="px-4 py-3">
                         <div className="flex gap-1.5">
                           {/* ✅ Edit button — opens EditDoctorModal with this doctor */}

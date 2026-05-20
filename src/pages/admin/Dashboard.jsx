@@ -1,5 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { Users, UserRound, CalendarDays, Trash2 } from "lucide-react";
+import {
+  Users,
+  UserRound,
+  CalendarDays,
+  Trash2,
+  CloudCog,
+  Wallet,
+  CreditCard,
+} from "lucide-react";
 import clsx from "clsx";
 import { useAdminDashboard } from "../../hooks/useAdminDashboard";
 import { useAuthStore } from "../../store/authStore";
@@ -89,7 +97,7 @@ function StatCard({ icon: Icon, iconBg, iconColor, label, value, sub }) {
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
         {label}
       </p>
-      <p className="text-3xl font-bold text-gray-900">
+      <p className="text-2xl font-bold text-gray-900">
         {value ?? <span className="text-gray-300">—</span>}
       </p>
       {sub && (
@@ -111,6 +119,8 @@ export default function AdminDashboard() {
     cancelBooking,
     cancellingId,
   } = useAdminDashboard();
+
+  console.log(stats);
 
   const firstName = user?.name?.split(" ")[0] || "Admin";
 
@@ -135,11 +145,12 @@ export default function AdminDashboard() {
               <div className="w-10 h-10 bg-gray-100 rounded-xl mb-3" />
               <div className="h-3 bg-gray-100 rounded w-24 mb-3" />
               <div className="h-7 bg-gray-100 rounded w-20" />
+              <div className="h-7 bg-gray-100 rounded w-20" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-5 gap-4 mb-6">
           <StatCard
             icon={Users}
             iconBg="bg-teal-50"
@@ -163,6 +174,21 @@ export default function AdminDashboard() {
             label="Total Appointments"
             value={stats?.totalAppointments?.toLocaleString()}
             // sub="↑ +89 today"
+          />
+          <StatCard
+            icon={Wallet}
+            iconBg="bg-green-50"
+            iconColor="text-green-600"
+            label="Total Payment"
+            value={stats?.totalPayment?.toLocaleString()}
+          />
+
+          <StatCard
+            icon={CreditCard}
+            iconBg="bg-purple-50"
+            iconColor="text-purple-600"
+            label="Offline Payments"
+            value={stats?.totalOfflinePayments?.toLocaleString()}
           />
         </div>
       )}

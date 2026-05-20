@@ -11,3 +11,7 @@ export const doctorUpdateProfile = (data) =>
   api.put(`/doctor/update-profile`, data);
 
 export const getDoctorDashboardApi = () => api.get("/doctor/dashboard");
+export const exportDoctorsCSV = () =>
+  api.get("/admin/export-csv", {
+    responseType: "blob",
+  });

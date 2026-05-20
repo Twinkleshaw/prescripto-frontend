@@ -20,7 +20,7 @@ export default function AdminNavbar() {
       </span>
 
       {/* Search */}
-      <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 w-64">
+      {/* <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 w-64">
         <svg
           className="w-3.5 h-3.5 stroke-gray-400 fill-none shrink-0"
           strokeWidth="2"
@@ -34,7 +34,7 @@ export default function AdminNavbar() {
           placeholder="Search patient or doctor..."
           className="bg-transparent text-xs text-gray-600 outline-none w-full placeholder:text-gray-400"
         />
-      </div>
+      </div> */}
 
       {/* Right icons */}
       <div className="flex items-center gap-2 ml-auto">
