@@ -2,7 +2,11 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Phone, Calendar, User } from "lucide-react";
 import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
-import { getPatientByIdApi, getPatientsApi } from "../../api/endpoints/patient";
+import { getPatientByIdApi } from "../../api/endpoints/patient";
+import {
+  getAppointmentsApi,
+  getPatientsSummary,
+} from "../../api/endpoints/appointments";
 
 // ── helpers ──────────────────────────────────────────────
 function getInitials(name = "") {
@@ -23,13 +27,15 @@ function formatDate(dateStr) {
   });
 }
 
-const AVATAR_COLORS = [
-  "bg-teal-100 text-primary",
-  "bg-amber-100 text-amber-700",
-  "bg-violet-100 text-violet-600",
-  "bg-blue-100 text-blue-600",
-  "bg-pink-100 text-pink-600",
-];
+const STATUS_MAP = {
+  completed: "bg-[#DCFCE7] text-[#15803D] border-[#DCFCE7]",
+
+  booked: "bg-[#FEF3C7] text-[#B45309] border-[#FEF3C7]",
+
+  cancelled: "bg-[#FEE2E2] text-[#B91C1C] border-[#FEE2E2]",
+};
+
+const AVATAR_COLORS = ["bg-[#F1F5F9] text-[#006860]"];
 
 export default function AdminPatients() {
   const [page, setPage] = useState(1);
@@ -41,12 +47,12 @@ export default function AdminPatients() {
   // ── Fetch patient list ────────────────────────────────
   const { data, isLoading, isError } = useQuery({
     queryKey: ["patients", page, search],
-    queryFn: () => getPatientsApi({ page, limit, search }),
+    queryFn: () => getPatientsSummary({ page, limit, search }),
     keepPreviousData: true,
   });
 
   const patients = data?.data?.patients ?? [];
-  const total = data?.data?.total ?? 0;
+  const total = data?.data?.totalPatients ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   // ── Select patient — fetch detail ─────────────────────
@@ -83,7 +89,7 @@ export default function AdminPatients() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">All Patients</h1>
             <p className="text-sm text-gray-400 mt-0.5">
-              {total.toLocaleString()} total records
+              Managing {total.toLocaleString()} active records
             </p>
           </div>
         </div>
@@ -128,20 +134,24 @@ export default function AdminPatients() {
           ) : (
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  {["Patient Name", "Phone", "Gender", "Joined", "Action"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3"
-                      >
-                        {h}
-                      </th>
-                    ),
-                  )}
+                <tr className="bg-[#F2F4F6] ">
+                  {[
+                    "Patient Name",
+                    "Invoice Id",
+                    "Date",
+                    "Doctor",
+                    "Status",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left text-[11px] font-semibold text-[#64748B] uppercase tracking-wider px-4 py-3"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 ">
                 {patients.length === 0 ? (
                   <tr>
                     <td
@@ -165,60 +175,52 @@ export default function AdminPatients() {
                         <div className="flex items-center gap-3">
                           <div
                             className={clsx(
-                              "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                              "w-10 h-10 rounded-full flex items-center justify-center text-[16px] font-bold shrink-0",
                               AVATAR_COLORS[idx % AVATAR_COLORS.length],
                             )}
                           >
-                            {getInitials(p.name || p.phone)}
+                            {getInitials(p?.patientName || "")}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {p.name || "—"}
+                            <p className="text-sm font-semibold text-[#475569]">
+                              {p?.patientName || "—"}
                             </p>
-                            <p className="text-xs text-gray-400 font-mono">
-                              #{p._id.slice(-6).toUpperCase()}
+                            <p className="text-xs text-gray-400">
+                              {p?.patientAge ? `Age ${p.patientAge}` : ""}
+                              {p?.patientAge && p?.patientGender ? " · " : ""}
+                              {p?.patientGender || ""}
                             </p>
                           </div>
                         </div>
                       </td>
+                      {/* Invoice */}
+                      <td className="px-4 py-3 text-xs text-[#475569] font-mono"></td>
 
-                      {/* Phone */}
-                      <td className="px-4 py-3 text-xs text-gray-600 font-mono">
-                        {p.phone || "—"}
+                      {/* date */}
+                      <td className="px-4 py-3 text-[14px]  text-[#475569]">
+                        {formatDate(p?.latestAppointmentCreatedAt)}
                       </td>
-
-                      {/* Gender */}
                       <td className="px-4 py-3">
-                        {p.gender ? (
-                          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
-                            {p.gender}
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-semibold text-gray-500 shrink-0">
+                            {getInitials(p?.doctor?.name || "")}
+                          </div>
+                          <span className=" text-[14px] text-[#475569]">
+                            {p?.doctor?.name || "—"}
                           </span>
-                        ) : (
-                          <span className="text-xs text-gray-300">—</span>
-                        )}
+                        </div>
                       </td>
-
-                      {/* Joined date */}
-                      <td className="px-4 py-3 text-xs text-gray-500">
-                        {formatDate(p.createdAt)}
-                      </td>
-
-                      {/* View button */}
+                      {/* Status */}
                       <td className="px-4 py-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelect(p);
-                          }}
+                        <span
                           className={clsx(
-                            "text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors",
-                            selected?._id === p._id
-                              ? "bg-primary text-white"
-                              : "text-primary bg-teal-50 hover:bg-teal-100",
+                            "text-[11px] font-medium px-2.5 py-0.5 rounded-full capitalize",
+                            STATUS_MAP[p?.latestStatus] ||
+                              "bg-gray-100 text-gray-600",
                           )}
                         >
-                          {selected?._id === p._id ? "Viewing" : "View"}
-                        </button>
+                          {p?.latestStatus?.replace("_", " ") || "—"}
+                        </span>
                       </td>
                     </tr>
                   ))
