@@ -2,11 +2,8 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Phone, Calendar, User } from "lucide-react";
 import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
-import { getPatientByIdApi } from "../../api/endpoints/patient";
-import {
-  getAppointmentsApi,
-  getPatientsSummary,
-} from "../../api/endpoints/appointments";
+import { getUserByBookedByApi } from "../../api/endpoints/patient";
+import { getPatientsSummary } from "../../api/endpoints/appointments";
 
 // ── helpers ──────────────────────────────────────────────
 function getInitials(name = "") {
@@ -44,6 +41,8 @@ export default function AdminPatients() {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const limit = 10;
 
+  console.log(selected);
+
   // ── Fetch patient list ────────────────────────────────
   const { data, isLoading, isError } = useQuery({
     queryKey: ["patients", page, search],
@@ -57,17 +56,26 @@ export default function AdminPatients() {
 
   // ── Select patient — fetch detail ─────────────────────
   const handleSelect = async (p) => {
-    if (selected?._id === p._id) {
+    if (selected?.user?._id === p?.bookedBy) {
       setSelected(null);
       return;
     }
+
     setLoadingDetail(true);
+
     try {
-      const res = await getPatientByIdApi(p._id);
-      setSelected(res.data.patient);
-    } catch {
-      // fallback to list data if detail fetch fails
-      setSelected(p);
+      const res = await getUserByBookedByApi(p.bookedBy, {
+        page: 1,
+        limit: 10,
+        search: "",
+      });
+
+      setSelected({
+        ...res.data,
+        clickedPatient: p,
+      });
+    } catch (error) {
+      console.error(error);
     } finally {
       setLoadingDetail(false);
     }
@@ -141,6 +149,7 @@ export default function AdminPatients() {
                     "Date",
                     "Doctor",
                     "Status",
+                    "Action",
                   ].map((h) => (
                     <th
                       key={h}
@@ -222,6 +231,15 @@ export default function AdminPatients() {
                           {p?.latestStatus?.replace("_", " ") || "—"}
                         </span>
                       </td>
+                      {/* view */}
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleSelect(p)}
+                          className="text-primary text-sm font-medium hover:underline"
+                        >
+                          View
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -276,114 +294,169 @@ export default function AdminPatients() {
       </div>
 
       {/* ── RIGHT — Patient Detail Panel ── */}
-      <div className="w-64 shrink-0">
+      <div className="w-[300px] shrink-0">
         {!selected && !loadingDetail ? (
-          // Empty state
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center h-64">
-            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
-              <User size={20} className="text-gray-400" />
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center text-center h-72">
+            <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
+              <User size={22} className="text-gray-400" />
             </div>
-            <p className="text-sm font-semibold text-gray-500">
+
+            <p className="text-sm font-semibold text-gray-600">
               No patient selected
             </p>
+
             <p className="text-xs text-gray-400 mt-1">
-              Click View on any row to see details
+              Click View to see details
             </p>
           </div>
         ) : loadingDetail ? (
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-center h-64">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex items-center justify-center h-72">
             <p className="text-sm text-gray-400">Loading...</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
-            {/* Avatar + basic info */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-2xl bg-teal-100 flex items-center justify-center text-xl font-bold text-primary mb-3">
-                {getInitials(selected.name || selected.phone || "")}
+          <div className="bg-[#F8FAFC] border border-gray-200 rounded-3xl p-5 relative overflow-hidden">
+            {/* Decorative */}
+            <div className="absolute top-0 right-0 w-28 h-28 bg-[#EEF2F7] rounded-full translate-x-10 -translate-y-10" />
+
+            {/* Avatar */}
+            <div className="flex flex-col items-center text-center relative z-10">
+              <div className="w-24 h-24 rounded-3xl bg-[#E2F5F2] flex items-center justify-center text-3xl font-bold text-primary border-[6px] border-white shadow-sm">
+                {getInitials(
+                  selected?.user?.name || selected?.user?.phone || "",
+                )}
               </div>
-              <p className="text-sm font-bold text-gray-900">
-                {selected.name || "Unnamed Patient"}
-              </p>
-              <p className="text-xs font-mono text-gray-400 mt-0.5">
-                #{selected._id.slice(-8).toUpperCase()}
-              </p>
-              {selected.gender && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full mt-2">
-                  {selected.gender}
+
+              {/* Patient Name */}
+              <h2 className="mt-4 text-[30px] leading-none font-bold text-[#1E293B]">
+                {selected?.user?.name || "Unknown"}
+              </h2>
+
+              {/* User / Account */}
+              <p className="text-sm text-[#64748B] mt-2">
+                Booked By:{" "}
+                <span className="font-semibold text-[#334155]">
+                  {selected?.user?.phone || "—"}
                 </span>
-              )}
-            </div>
-
-            {/* Details */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3">
-              <p className="text-[9px] font-bold text-primary uppercase tracking-widest mb-2">
-                Patient Details
               </p>
 
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 bg-teal-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Phone size={12} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-[9px] text-gray-400 uppercase font-semibold">
-                    Phone
-                  </p>
-                  <p className="text-xs font-semibold text-gray-800 mt-0.5">
-                    {selected.phone || "—"}
-                  </p>
-                </div>
+              {/* Chips */}
+              {/* <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+                <span className="px-3 py-1 rounded-full bg-[#E2E8F0] text-[#475569] text-xs font-semibold">
+                  Age {selected?.clickedPatient?.patientAge || "—"}
+                </span>
+
+                <span className="px-3 py-1 rounded-full bg-[#E2E8F0] text-[#475569] text-xs font-semibold">
+                  {selected?.totalFamilyMembers || 0} Family Members
+                </span>
+              </div> */}
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="bg-[#F1F5F9] rounded-2xl p-4">
+                <p className="text-[10px] uppercase tracking-widest text-[#94A3B8] font-bold">
+                  Total Appointments
+                </p>
+
+                <h3 className="mt-2 text-3xl font-bold text-primary">
+                  {selected?.totalAppointments || 0}
+                </h3>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 bg-teal-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Calendar size={12} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-[9px] text-gray-400 uppercase font-semibold">
-                    Registered
-                  </p>
-                  <p className="text-xs font-semibold text-gray-800 mt-0.5">
-                    {formatDate(selected.createdAt)}
-                  </p>
-                </div>
-              </div>
+              <div className="bg-[#F1F5F9] rounded-2xl p-4">
+                <p className="text-[10px] uppercase tracking-widest text-[#94A3B8] font-bold">
+                  Monthly Count
+                </p>
 
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 bg-teal-50 rounded-lg flex items-center justify-center shrink-0">
-                  <User size={12} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-[9px] text-gray-400 uppercase font-semibold">
-                    Account Status
-                  </p>
-                  <span
-                    className={clsx(
-                      "text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 inline-block",
-                      selected.isActive
-                        ? "bg-teal-50 text-primary"
-                        : "bg-red-50 text-red-500",
-                    )}
+                <h3 className="mt-2 text-3xl font-bold text-primary">
+                  {selected?.recentAppointments?.length || 0}
+                </h3>
+              </div>
+            </div>
+
+            {/*  Patients */}
+            <div className="mt-7">
+              <p className="text-[10px] uppercase tracking-widest text-[#94A3B8] font-bold mb-3">
+                Patients
+              </p>
+
+              <div className="space-y-2">
+                {selected?.familyPatients?.map((patient, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white border border-gray-100 rounded-2xl px-4 py-3 flex items-center justify-between"
                   >
-                    {selected.isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[#1E293B]">
+                        {patient.patientName}
+                      </p>
+
+                      <p className="text-xs text-[#64748B] mt-0.5">
+                        Age {patient.patientAge}
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-primary">
+                        {patient.totalVisits}
+                      </p>
+
+                      <p className="text-[10px] uppercase text-[#94A3B8]">
+                        Visits
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Last updated */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                Last Updated
-              </p>
-              <p className="text-xs font-semibold text-gray-700">
-                {formatDate(selected.updatedAt)}
-              </p>
-            </div>
+            {/* Recent Appointment */}
+            {selected?.recentAppointments?.[0] && (
+              <div className="mt-7">
+                <p className="text-[10px] uppercase tracking-widest text-[#94A3B8] font-bold mb-3">
+                  Next Appointment
+                </p>
 
-            {/* Close detail */}
+                <div className="bg-[#EEF2F2] rounded-2xl p-4 border-l-4 border-primary">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-white rounded-xl px-3 py-2 text-center shadow-sm">
+                      <p className="text-[10px] font-bold text-red-500 uppercase">
+                        {new Date(
+                          selected.recentAppointments[0].createdAt,
+                        ).toLocaleDateString("en-US", {
+                          month: "short",
+                        })}
+                      </p>
+
+                      <p className="text-xl font-bold text-[#0F172A]">
+                        {new Date(
+                          selected.recentAppointments[0].createdAt,
+                        ).getDate()}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-bold text-[#1E293B]">
+                        General Checkup
+                      </p>
+
+                      <p className="text-xs text-[#64748B] mt-1">
+                        {selected?.recentAppointments?.[0]?.doctorId?.name} •{" "}
+                        {
+                          selected?.recentAppointments?.[0]?.doctorId
+                            ?.speciality
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Close */}
             <button
               onClick={() => setSelected(null)}
-              className="w-full py-2 text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              className="w-full mt-6 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-semibold text-[#475569] hover:bg-gray-50 transition-colors"
             >
               Close Panel
             </button>

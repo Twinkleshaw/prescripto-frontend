@@ -3,7 +3,8 @@ import api from "../axiosInstance";
 export const getAppointmentsApi = (params) =>
   api.get("/appointment/appointments-list", { params });
 
-export const getPatientsSummary = () => api.get("/admin/getAdminPatients");
+export const getPatientsSummary = (params) =>
+  api.get("/admin/getAdminPatients", { params });
 
 export const cancelAppointmentApi = (id) =>
   api.patch(`/appointment/appointments/${id}/cancel`);

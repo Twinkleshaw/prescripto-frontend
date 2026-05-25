@@ -13,6 +13,7 @@ import {
   cancelAppointmentApi,
   completeAppointmentApi,
 } from "../../api/endpoints/appointments";
+import icon1 from "../../assets/Container.png";
 
 // ── helpers ──────────────────────────────────────────────
 const STATUS_MAP = {
@@ -133,11 +134,6 @@ export default function AdminAppointments() {
   const total = data?.data?.totalAppointments ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
-  // Counts derived from current page data
-  const completed = appointments.filter((a) => a.status === "completed").length;
-  const pending = appointments.filter((a) => a.status === "booked").length;
-  const cancelled = appointments.filter((a) => a.status === "cancelled").length;
-
   // ── Cancel ────────────────────────────────────────────
   const { mutate: cancelMutate } = useMutation({
     mutationFn: cancelAppointmentApi,
@@ -180,16 +176,7 @@ export default function AdminAppointments() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center">
-              <svg
-                className="w-5 h-5 stroke-primary fill-none"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
+              <img src={icon1} alt="" />
             </div>
             <div>
               <p className="text-xs text-gray-400 font-medium">
@@ -204,18 +191,18 @@ export default function AdminAppointments() {
           {/* Status breakdown */}
           <div className="flex gap-6">
             <div className="text-center">
-              <p className="text-xl font-bold text-primary">{completed}</p>
-              <p className="text-xs text-gray-400">Completed</p>
+              <p className="text-xl font-bold ">{data?.data?.totalCompleted}</p>
+              <p className="text-xs font-bold text-gray-400">Completed</p>
             </div>
             <div className="w-px bg-gray-100" />
             <div className="text-center">
-              <p className="text-xl font-bold text-amber-500">{pending}</p>
-              <p className="text-xs text-gray-400">Pending</p>
+              <p className="text-xl font-bold "> {data?.data?.totalPending}</p>
+              <p className="text-xs font-bold text-gray-400">Pending</p>
             </div>
             <div className="w-px bg-gray-100" />
             <div className="text-center">
-              <p className="text-xl font-bold text-red-400">{cancelled}</p>
-              <p className="text-xs text-gray-400">Cancelled</p>
+              <p className="text-xl font-bold ">{data?.data?.totalCancelled}</p>
+              <p className="text-xs font-bold text-gray-400">Cancelled</p>
             </div>
           </div>
         </div>
@@ -265,23 +252,17 @@ export default function AdminAppointments() {
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                {[
-                  "Patient",
-                  "Doctor",
-                  "Date",
-                  "Time",
-                  "Token",
-                  "Status",
-                  "Actions",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
-                  >
-                    {h}
-                  </th>
-                ))}
+              <tr className="bg-gray-50 border-b border-gray-100 ">
+                {["Patient", "Doctor", "Date", "Time", "Status", "Actions"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
+                    >
+                      {h}
+                    </th>
+                  ),
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -368,11 +349,11 @@ export default function AdminAppointments() {
                       </td>
 
                       {/* Token */}
-                      <td className="px-5 py-3.5">
+                      {/* <td className="px-5 py-3.5">
                         <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
                           #{appt.tokenNumber ?? "—"}
                         </span>
-                      </td>
+                      </td> */}
 
                       {/* Status */}
                       <td className="px-5 py-3.5">
