@@ -18,8 +18,8 @@ const navItems = [
   { label: "Doctors", icon: Users, to: "/admin/doctors" },
   { label: "Patients", icon: UserRound, to: "/admin/patients" },
   { label: "Appointments", icon: CalendarDays, to: "/admin/appointments" },
-  // { label: "Financials",   icon: DollarSign,      to: "/admin/financials" },
-  // { label: "Invoices",     icon: FileText,        to: "/admin/invoices" },
+  { label: "Financials", icon: DollarSign, to: "/admin/financials" },
+  { label: "Invoices", icon: FileText, to: "/admin/invoices" },
   // { label: "Reports",      icon: BarChart2,       to: "/admin/reports" },
   { label: "Settings", icon: Settings, to: "/admin/settings" },
 ];

@@ -11,6 +11,11 @@ import {
 import clsx from "clsx";
 import { useAdminDashboard } from "../../hooks/useAdminDashboard";
 import { useAuthStore } from "../../store/authStore";
+import icon1 from "../../assets/admin_dash_1.png";
+import icon2 from "../../assets/admin_dash_2.png";
+import icon3 from "../../assets/admin_dash_3.png";
+import icon4 from "../../assets/admin_dash_4.png";
+import icon5 from "../../assets/admin_dash_5.png";
 
 // ── helpers ──────────────────────────────────────────────
 function getInitials(name = "") {
@@ -32,13 +37,9 @@ function fmtDate(d) {
 }
 
 const SPECIALITY_COLORS = [
-  "bg-blue-100 text-blue-700",
-  "bg-teal-100 text-teal-700",
-  "bg-indigo-100 text-indigo-700",
-  "bg-pink-100 text-pink-700",
-  "bg-orange-100 text-orange-700",
-  "bg-purple-100 text-purple-700",
-  "bg-cyan-100 text-cyan-700",
+  "bg-[#89F5E8] text-[#00504A]",
+  "bg-[#D2E4FF] text-[#00497E]",
+  "bg-[#DAE2FD] text-[#3F465C]",
 ];
 
 function getSpecialityColor(speciality = "") {
@@ -88,11 +89,15 @@ function StatCard({ icon: Icon, iconBg, iconColor, label, value, sub }) {
     <div className="bg-white border border-gray-200 rounded-2xl p-5">
       <div
         className={clsx(
-          "w-10 h-10 rounded-xl flex items-center justify-center mb-3",
+          "w-11 h-10 rounded-xl flex items-center justify-center mb-3",
           iconBg,
         )}
       >
-        <Icon size={20} className={iconColor} />
+        {typeof Icon === "string" ? (
+          <img src={Icon} alt="icon" className="w-5 h-5" />
+        ) : (
+          <Icon size={20} className={iconColor} />
+        )}
       </div>
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
         {label}
@@ -119,8 +124,6 @@ export default function AdminDashboard() {
     cancelBooking,
     cancellingId,
   } = useAdminDashboard();
-
-  console.log(stats);
 
   const firstName = user?.name?.split(" ")[0] || "Admin";
 
@@ -152,7 +155,7 @@ export default function AdminDashboard() {
       ) : (
         <div className="grid grid-cols-5 gap-4 mb-6">
           <StatCard
-            icon={Users}
+            icon={icon1}
             iconBg="bg-teal-50"
             iconColor="text-primary"
             label="Listed Doctors"
@@ -160,33 +163,33 @@ export default function AdminDashboard() {
             // sub="↑ +12 this month"
           />
           <StatCard
-            icon={UserRound}
-            iconBg="bg-blue-50"
+            icon={icon5}
+            iconBg="bg-[#0078CA1A]"
             iconColor="text-blue-500"
             label="Total Patients"
             value={stats?.totalPatients?.toLocaleString()}
             // sub="↑ +340 this week"
           />
           <StatCard
-            icon={CalendarDays}
-            iconBg="bg-orange-50"
+            icon={icon3}
+            iconBg="bg-[#FFDAD666]"
             iconColor="text-orange-500"
             label="Total Appointments"
             value={stats?.totalAppointments?.toLocaleString()}
             // sub="↑ +89 today"
           />
           <StatCard
-            icon={Wallet}
-            iconBg="bg-green-50"
-            iconColor="text-green-600"
+            icon={icon4}
+            iconBg="bg-[#DAE2FD]"
+            iconColor="text-[#5C647A]"
             label="Total Payment"
             value={stats?.totalPayment?.toLocaleString()}
           />
 
           <StatCard
-            icon={CreditCard}
-            iconBg="bg-purple-50"
-            iconColor="text-purple-600"
+            icon={icon2}
+            iconBg="bg-[#FFEDD5]"
+            iconColor="text-[#FFEDD5]"
             label="Offline Payments"
             value={stats?.totalOfflinePayments?.toLocaleString()}
           />

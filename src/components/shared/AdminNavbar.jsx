@@ -38,15 +38,15 @@ export default function AdminNavbar() {
 
       {/* Right icons */}
       <div className="flex items-center gap-2 ml-auto">
-        <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
+        {/* <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <Bell size={15} className="text-gray-500" />
         </button>
         <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <HelpCircle size={15} className="text-gray-500" />
-        </button>
+        </button> */}
 
         {/* Profile chip */}
-        <div className="flex items-center gap-2 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-teal-50 hover:border-teal-200 transition-colors">
+        {/* <div className="flex items-center gap-2 px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
             {initials}
           </div>
@@ -56,7 +56,7 @@ export default function AdminNavbar() {
             </p>
             <p className="text-[10px] text-gray-400 mt-0.5">Super Admin</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </header>
   );
