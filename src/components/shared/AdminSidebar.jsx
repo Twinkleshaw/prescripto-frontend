@@ -21,7 +21,7 @@ const navItems = [
   // { label: "Financials",   icon: DollarSign,      to: "/admin/financials" },
   // { label: "Invoices",     icon: FileText,        to: "/admin/invoices" },
   // { label: "Reports",      icon: BarChart2,       to: "/admin/reports" },
-  // { label: "Settings",     icon: Settings,        to: "/admin/settings" },
+  { label: "Settings", icon: Settings, to: "/admin/settings" },
 ];
 
 export default function AdminSidebar() {

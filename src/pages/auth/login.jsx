@@ -107,12 +107,12 @@ export default function Login() {
               />
               Keep me signed in
             </label>
-            <button
+            {/* <button
               type="button"
               className="text-sm font-semibold text-primary hover:underline"
             >
               Forgot password?
-            </button>
+            </button> */}
           </div>
 
           {/* Error */}
@@ -135,10 +135,10 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-500">
-          Don't have an account?{" "}
+          {/* Don't have an account?{" "}
           <span className="text-primary font-semibold cursor-pointer hover:underline">
             Contact System Admin
-          </span>
+          </span> */}
           <div className="flex justify-center gap-4 mt-2">
             <span className="text-xs text-gray-400 cursor-pointer hover:text-gray-600">
               Privacy Policy
@@ -151,10 +151,10 @@ export default function Login() {
       </div>
 
       {/* Encrypted badge */}
-      <div className="flex items-center gap-1.5 mt-6 text-gray-400 text-[11px] tracking-widest">
+      {/* <div className="flex items-center gap-1.5 mt-6 text-gray-400 text-[11px] tracking-widest">
         <ShieldCheck size={13} />
         AES-256 ENCRYPTED ENVIRONMENT
-      </div>
+      </div> */}
     </div>
   );
 }

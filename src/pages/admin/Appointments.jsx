@@ -5,6 +5,7 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import clsx from "clsx";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +13,7 @@ import {
   getAppointmentsApi,
   cancelAppointmentApi,
   completeAppointmentApi,
+  exportAppointmentCSV,
 } from "../../api/endpoints/appointments";
 import icon1 from "../../assets/Container.png";
 
@@ -63,6 +65,28 @@ function getInitials(name = "") {
     .slice(0, 2)
     .toUpperCase();
 }
+
+const handleExport = async () => {
+  try {
+    const response = await exportAppointmentCSV();
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute("download", "appointment-report.csv");
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // ── Action dropdown ───────────────────────────────────────
 function ActionMenu({ appt, onComplete, onCancel, loadingId }) {
@@ -168,6 +192,14 @@ export default function AdminAppointments() {
           <p className="text-sm text-gray-400 mt-1">
             View and manage all patient appointments
           </p>
+        </div>
+        <div>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-[#E6E8EA] border border-gray-200 rounded-xl "
+          >
+            <Download size={13} /> Export Data
+          </button>
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import AdminAppointments from "../pages/admin/Appointments";
 import DoctorProfile from "../pages/doctor/Profile";
 import DoctorAppointments from "../pages/doctor/Appointment";
 import DoctorPayment from "../pages/doctor/Payment";
+import Settings from "../pages/admin/Settings";
 
 export default function AppRouter() {
   return (
@@ -32,6 +33,7 @@ export default function AppRouter() {
           <Route path="doctors" element={<AdminDoctors />} />
           <Route path="patients" element={<AdminPatients />} />
           <Route path="appointments" element={<AdminAppointments />} />
+          <Route path="settings" element={<Settings />} />
           {/* Add admin pages here as nested routes */}
         </Route>
 

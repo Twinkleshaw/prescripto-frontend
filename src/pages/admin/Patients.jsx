@@ -414,7 +414,7 @@ export default function AdminPatients() {
             {selected?.recentAppointments?.[0] && (
               <div className="mt-7">
                 <p className="text-[10px] uppercase tracking-widest text-[#94A3B8] font-bold mb-3">
-                  Next Appointment
+                  Appointment
                 </p>
 
                 <div className="bg-[#EEF2F2] rounded-2xl p-4 border-l-4 border-primary">

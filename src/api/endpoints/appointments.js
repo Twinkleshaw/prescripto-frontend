@@ -11,3 +11,8 @@ export const cancelAppointmentApi = (id) =>
 
 export const completeAppointmentApi = (id) =>
   api.patch(`/appointment/${id}/complete`);
+
+export const exportAppointmentCSV = () =>
+  api.get("/appointment/export/csv", {
+    responseType: "blob",
+  });
