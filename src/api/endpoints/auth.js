@@ -2,7 +2,17 @@ import api from "../axiosInstance";
 
 export const loginApi = (credentials) => api.post("auth/login", credentials);
 
-export const updateAdminProfileApi = (data) => api.put("/admin/profile", data);
+export const updateAdminProfileApi = (data) => {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("phone", data.phone);
+  if (data.imageFile) {
+    formData.append("profileImage", data.imageFile); // ✅ match backend field name
+  }
+  return api.put("/admin/profile", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 
 export const changePasswordApi = (data) =>
   api.put("/admin/change-password", data);

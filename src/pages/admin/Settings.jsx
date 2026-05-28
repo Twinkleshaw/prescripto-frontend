@@ -178,7 +178,7 @@ export default function Settings() {
   );
   const [avatarFile, setAvatarFile] = useState(null);
   const fileRef = useRef(null);
-
+  console.log("show this ", avatarPreview);
   useEffect(() => {
     setProfile({ name: user?.name ?? "", phone: user?.phone ?? "" });
     setAvatarPreview(user?.profileImage ?? null);
@@ -239,14 +239,6 @@ export default function Settings() {
     setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const handleProfileSave = () => {
-    updateProfile({
-      name: profile.name,
-      phone: profile.phone,
-      profileImage: avatarPreview,
-    });
-  };
-
   const handlePasswordSave = () => {
     setPwError("");
 
@@ -262,7 +254,7 @@ export default function Settings() {
     const profileChanged =
       profile.name !== user?.name ||
       profile.phone !== user?.phone ||
-      avatarFile !== user?.image;
+      avatarFile !== null;
 
     const passwordEntered =
       passwords.oldPassword ||
@@ -273,7 +265,7 @@ export default function Settings() {
       updateProfile({
         name: profile.name,
         phone: profile.phone,
-        profileImage: avatarPreview,
+        profileImage: avatarFile,
       });
     }
 
@@ -290,17 +282,10 @@ export default function Settings() {
     setProfile({ name: user?.name ?? "", phone: user?.phone ?? "" });
     setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
     setPwError("");
-    setAvatarPreview(user?.image ?? null);
+    setAvatarPreview(user?.profileImage ?? null);
     setAvatarFile(null);
   };
 
-  const initials =
-    user?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() || "AD";
   const cardTitle =
     role === "admin" ? "Admin Profile Details" : "Doctor Profile Details";
 
@@ -333,7 +318,7 @@ export default function Settings() {
                 <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
                   {/* {avatarPreview ? ( */}
                   <img
-                    src={user?.profileImage}
+                    src={avatarPreview}
                     alt="avatar"
                     className="w-full h-full object-cover"
                   />
