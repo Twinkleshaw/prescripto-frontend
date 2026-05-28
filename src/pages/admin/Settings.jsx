@@ -18,6 +18,7 @@ import {
   changePasswordApi,
   updateAdminProfileApi,
 } from "../../api/endpoints/auth";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 // ── helpers ──────────────────────────────────────────────
 function fmtDate(d) {
@@ -181,7 +182,7 @@ export default function Settings() {
   console.log("show this ", avatarPreview);
   useEffect(() => {
     setProfile({ name: user?.name ?? "", phone: user?.phone ?? "" });
-    setAvatarPreview(user?.profileImage ?? null);
+    setAvatarPreview(getImageUrl(user?.profileImage) ?? null);
   }, [user]);
 
   const { mutate: updateProfile, isPending: updatingProfile } = useMutation({
@@ -282,7 +283,7 @@ export default function Settings() {
     setProfile({ name: user?.name ?? "", phone: user?.phone ?? "" });
     setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
     setPwError("");
-    setAvatarPreview(user?.profileImage ?? null);
+    setAvatarPreview(getImageUrl(user?.profileImage) ?? null);
     setAvatarFile(null);
   };
 
@@ -324,8 +325,8 @@ export default function Settings() {
                   />
                   {/* ) : ( */}
                   {/* <span className="text-lg font-bold text-primary">
-                    {initials}
-                  </span> */}
+                      {initials}
+                    </span> */}
                   {/* )} */}
                 </div>
                 <button
