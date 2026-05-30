@@ -16,6 +16,11 @@ import {
   completeAppointmentApi,
 } from "../../api/endpoints/appointments";
 
+import icon1 from "../../assets/doctor_1.png";
+import icon2 from "../../assets/doctor_2.png";
+import icon3 from "../../assets/doctor_3.png";
+import icon4 from "../../assets/Container.png";
+
 // ── helpers ──────────────────────────────────────────────
 function getInitials(name = "") {
   return (
@@ -168,62 +173,70 @@ export default function DoctorAppointments() {
       </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-3 gap-4 mb-5">
-        <div className="bg-white border border-gray-200 rounded-2xl p-5">
-          <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center mb-3">
-            <CalendarDays size={17} className="text-primary" />
+      <div className="grid grid-cols-4 gap-3 mb-5">
+        {/* Total Patients */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <div className="flex items-start justify-between">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center  bg-[#0068601A] ">
+              <img src={icon1} alt="" />
+            </div>
           </div>
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Total Appointments
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Total Patients
           </p>
-          <p className="text-2xl font-bold text-gray-900">{total}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-gray-900">
+              {data?.data?.totalPatients}
+            </p>
+          </div>
+        </div>
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#1A998E1A]">
+            <img src={icon3} alt="" />
+          </div>
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Appointments
+          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-gray-900">
+              {data?.data?.totalAppointments}
+            </p>
+          </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-5">
-          <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center mb-3">
-            <Clock size={17} className="text-amber-500" />
+        {/* Active Surgeons */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#F59E0B1A]">
+            <img src={icon2} alt="" className="h-4 w-4" />
           </div>
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Pending
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Offline payments
           </p>
-          <p className="text-2xl font-bold text-gray-900">{pendingCount}</p>
-          <p className="text-xs text-gray-400 mt-0.5">on this page</p>
+          <p className="text-2xl font-bold text-gray-900">
+            {data?.data?.totalOfflinePayments}
+          </p>
+          {/* <p className="text-xs text-gray-400 mt-1">Capacity 88%</p> */}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-5">
-          <div className="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center mb-3">
-            <CheckCheck size={17} className="text-green-500" />
+        {/* Monthly Revenue */}
+        <div className="bg-white border border-gray-200 border-l-[3px] border-l-transparent hover:border-l-emerald-500 rounded-2xl px-5 py-4 transition-colors">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#22C55E1A]">
+            <img src={icon4} alt="" className="h-4 w-4" />
           </div>
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            Completed
+          <p className="text-xs text-[#64748B] font-medium mb-2">
+            Revenue Collected
           </p>
-          <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
-          <p className="text-xs text-gray-400 mt-0.5">on this page</p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-gray-900">
+              {data?.data?.totalPayment}
+            </p>
+          </div>
         </div>
       </div>
-
       {/* ── Table ── */}
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
         {/* Toolbar */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
-          {/* Filter tabs */}
-          <div className="flex gap-1">
-            {FILTER_TABS.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={clsx(
-                  "px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors",
-                  activeFilter === key
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-500 hover:bg-gray-100",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
           {/* Search */}
           <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
             <svg
@@ -269,7 +282,6 @@ export default function DoctorAppointments() {
                   "Patient",
                   "Date",
                   "Time",
-                  "Specialization",
                   "Payment Status",
                   "Status",
                   "Actions",
@@ -350,27 +362,6 @@ export default function DoctorAppointments() {
                           <Clock size={13} className="shrink-0" />
                           <span className="text-sm">{fmtTime(appt.time)}</span>
                         </div>
-                      </td>
-
-                      {/* Payment Mode */}
-                      <td className="px-4 py-4 min-w-[170px]">
-                        <span
-                          className="
-      inline-flex
-      items-center
-      justify-center
-      whitespace-nowrap
-      px-3
-      py-1.5
-      rounded-full
-      text-xs
-      font-semibold
-      bg-gray-100
-      text-gray-700
-    "
-                        >
-                          {appt?.doctorId?.speciality || "General"}
-                        </span>
                       </td>
 
                       {/* Payment Status */}
