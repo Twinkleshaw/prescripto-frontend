@@ -70,12 +70,6 @@ export default function DoctorPayment() {
 
   const d = data?.data;
 
-  const online = d?.earnings?.online ?? 0;
-  const offline = d?.earnings?.offline ?? 0;
-  const total = online + offline || 1; // avoid divide by zero
-  const onlinePct = Math.round((online / total) * 100);
-  const offlinePct = Math.round((offline / total) * 100);
-
   // Payment history from latestBookings
   const bookings = d?.latestBookings ?? [];
 
