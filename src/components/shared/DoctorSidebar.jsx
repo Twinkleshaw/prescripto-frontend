@@ -1,13 +1,20 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, DollarSign, Settings, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  CalendarDays,
+  DollarSign,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import logo from "../../assets/logo.png";
 import clsx from "clsx";
 
 const navItems = [
-  { label: "Dashboard",   icon: LayoutDashboard, to: "/doctor/dashboard" },
-  { label: "Appointment", icon: CalendarDays,    to: "/doctor/appointments" },
-  { label: "Payment",     icon: DollarSign,      to: "/doctor/payments" },
-  { label: "Settings",    icon: Settings,         to: "/doctor/settings" },
+  { label: "Dashboard", icon: LayoutDashboard, to: "/doctor/dashboard" },
+  { label: "Appointment", icon: CalendarDays, to: "/doctor/appointments" },
+  { label: "Payment", icon: DollarSign, to: "/doctor/payments" },
+  { label: "Settings", icon: Settings, to: "/doctor/settings" },
 ];
 
 export default function DoctorSidebar() {
@@ -19,21 +26,28 @@ export default function DoctorSidebar() {
     navigate("/login");
   };
 
-  const initials = user?.name
-    ?.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "DR";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "DR";
 
   return (
     <aside className="w-52 bg-white border-r border-gray-100 flex flex-col shrink-0 h-screen">
       {/* Brand */}
       <div className="flex items-center gap-2.5 px-4 py-4 border-b border-gray-100">
         <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-            <path d="M19 9h-1V7a6 6 0 00-12 0v2H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2v-9a2 2 0 00-2-2zm-7 8a2 2 0 110-4 2 2 0 010 4zm3-8H9V7a3 3 0 016 0v2z" />
-          </svg>
+          <img src={logo} alt="logo" />
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 leading-none">Prescripto</p>
-          <p className="text-[10px] text-gray-400 tracking-wide mt-0.5">DOCTOR ADMIN</p>
+          <p className="text-sm font-bold text-gray-900 leading-none">
+            Prescripto
+          </p>
+          <p className="text-[10px] text-gray-400 tracking-wide mt-0.5">
+            DOCTOR ADMIN
+          </p>
         </div>
       </div>
 
@@ -48,13 +62,16 @@ export default function DoctorSidebar() {
                 "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 isActive
                   ? "bg-teal-50 text-primary font-semibold"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900",
               )
             }
           >
             {({ isActive }) => (
               <>
-                <Icon size={16} className={isActive ? "text-primary" : "text-gray-400"} />
+                <Icon
+                  size={16}
+                  className={isActive ? "text-primary" : "text-gray-400"}
+                />
                 <span>{label}</span>
                 {isActive && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />
@@ -72,8 +89,12 @@ export default function DoctorSidebar() {
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900 truncate">{user?.name || "Doctor"}</p>
-            <p className="text-[10px] text-gray-400 truncate">{user?.specialization || "Specialist"}</p>
+            <p className="text-xs font-semibold text-gray-900 truncate">
+              {user?.name || "Doctor"}
+            </p>
+            <p className="text-[10px] text-gray-400 truncate">
+              {user?.specialization || "Specialist"}
+            </p>
           </div>
         </div>
         <button

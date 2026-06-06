@@ -25,8 +25,8 @@ export const useAdminDashboard = () => {
         totalDoctors: data.totalDoctors ?? "—",
         totalPatients: data.totalPatients ?? "—",
         totalAppointments: data.totalAppointments ?? 0,
-        totalOfflinePayments: data?.totalOfflinePayments ?? 0,
-        totalPayment: data?.totalPayment ?? 0,
+        totalPendingAmount: data?.totalPendingAmount ?? 0,
+        totalCollected: data?.totalCollected ?? 0,
       });
       setRecent(data.appointments ?? []);
     } catch (err) {

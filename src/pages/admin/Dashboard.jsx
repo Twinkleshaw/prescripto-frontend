@@ -125,7 +125,7 @@ export default function AdminDashboard() {
     cancellingId,
   } = useAdminDashboard();
 
-  const firstName = user?.name?.split(" ")[0] || "Admin";
+  const firstName = user?.name || "Admin";
 
   return (
     <div>
@@ -182,16 +182,16 @@ export default function AdminDashboard() {
             icon={icon4}
             iconBg="bg-[#DAE2FD]"
             iconColor="text-[#5C647A]"
-            label="Total Payment"
-            value={stats?.totalPayment?.toLocaleString()}
+            label="Payment Sessions"
+            value={stats?.totalCollected?.toLocaleString()}
           />
 
           <StatCard
             icon={icon2}
             iconBg="bg-[#FFEDD5]"
             iconColor="text-[#FFEDD5]"
-            label="Offline Payments"
-            value={stats?.totalOfflinePayments?.toLocaleString()}
+            label="Due Payments"
+            value={stats?.totalPendingAmount?.toLocaleString()}
           />
         </div>
       )}

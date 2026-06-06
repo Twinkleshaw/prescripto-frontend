@@ -42,14 +42,14 @@ export default function DoctorNavbar() {
       {/* Right side */}
       <div className="flex items-center gap-2 ml-auto">
         {/* Bell */}
-        <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
+        {/* <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <Bell size={15} className="text-gray-500" />
-        </button>
+        </button> */}
 
         {/* Settings */}
-        <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
+        {/* <button className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <Settings size={15} className="text-gray-500" />
-        </button>
+        </button> */}
 
         {/* Date chip */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl">

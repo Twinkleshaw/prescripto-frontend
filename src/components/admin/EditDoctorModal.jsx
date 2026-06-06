@@ -78,6 +78,12 @@ export default function EditDoctorModal({ doctor, onClose }) {
       street: "",
       landmark: "",
     },
+    bankDetails: {
+      accountHolderName: "",
+      accountNumber: "",
+      ifscCode: "",
+      bankName: "",
+    },
     googleMapLink: "",
   });
 
@@ -105,6 +111,15 @@ export default function EditDoctorModal({ doctor, onClose }) {
         street: doctor.address?.street ?? "",
         landmark: doctor.address?.landmark ?? "",
       },
+      bankDetails: {
+        accountHolderName: doctor.bankDetails?.accountHolderName ?? "",
+
+        accountNumber: doctor.bankDetails?.accountNumber ?? "",
+
+        ifscCode: doctor.bankDetails?.ifscCode ?? "",
+
+        bankName: doctor.bankDetails?.bankName ?? "",
+      },
       googleMapLink: doctor.googleMapLink ?? "",
     });
   }, [doctor]);
@@ -113,6 +128,14 @@ export default function EditDoctorModal({ doctor, onClose }) {
 
   const setAddr = (key, val) =>
     setForm((f) => ({ ...f, address: { ...f.address, [key]: val } }));
+  const setBank = (key, val) =>
+    setForm((f) => ({
+      ...f,
+      bankDetails: {
+        ...f.bankDetails,
+        [key]: val,
+      },
+    }));
 
   const toggleDay = (day) =>
     setForm((f) => ({
@@ -139,6 +162,7 @@ export default function EditDoctorModal({ doctor, onClose }) {
     { n: 1, label: "Basic Info" },
     { n: 2, label: "Schedule" },
     { n: 3, label: "Address" },
+    { n: 4, label: "Bank Details" },
   ];
 
   return (
@@ -423,6 +447,41 @@ export default function EditDoctorModal({ doctor, onClose }) {
               </Field>
             </div>
           )}
+          {step === 4 && (
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Account Holder Name">
+                <input
+                  value={form.bankDetails.accountHolderName}
+                  onChange={(e) => setBank("accountHolderName", e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Account Number">
+                <input
+                  value={form.bankDetails.accountNumber}
+                  onChange={(e) => setBank("accountNumber", e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="IFSC Code">
+                <input
+                  value={form.bankDetails.ifscCode}
+                  onChange={(e) => setBank("ifscCode", e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Bank Name">
+                <input
+                  value={form.bankDetails.bankName}
+                  onChange={(e) => setBank("bankName", e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+            </div>
+          )}
 
           {/* Error */}
           {error && (
@@ -451,7 +510,7 @@ export default function EditDoctorModal({ doctor, onClose }) {
                 ← Back
               </button>
             )}
-            {step < 3 ? (
+            {step < 4 ? (
               <button
                 type="button"
                 onClick={() => setStep((s) => s + 1)}

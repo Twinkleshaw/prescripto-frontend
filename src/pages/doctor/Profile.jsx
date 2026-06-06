@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { doctorUpdateProfile } from "../../api/endpoints/doctor";
 import { useAuthStore } from "../../store/authStore";
 import clsx from "clsx";
@@ -52,7 +52,6 @@ function Toggle({ label, checked, onChange }) {
 
 export default function DoctorProfile() {
   const { user } = useAuthStore();
-  const queryClient = useQueryClient();
   const [tab, setTab] = useState("profile");
   const [saved, setSaved] = useState(false);
 
@@ -65,6 +64,12 @@ export default function DoctorProfile() {
     availableDays: [],
     availabilityStatus: true,
     address: { city: "", state: "", pinCode: "", street: "", landmark: "" },
+    bankDetails: {
+      accountHolderName: "",
+      accountNumber: "",
+      ifscCode: "",
+      bankName: "",
+    },
     googleMapLink: "",
   });
 
@@ -88,6 +93,15 @@ export default function DoctorProfile() {
         street: user.address?.street ?? "",
         landmark: user.address?.landmark ?? "",
       },
+      bankDetails: {
+        accountHolderName: user.bankDetails?.accountHolderName ?? "",
+
+        accountNumber: user.bankDetails?.accountNumber ?? "",
+
+        ifscCode: user.bankDetails?.ifscCode ?? "",
+
+        bankName: user.bankDetails?.bankName ?? "",
+      },
       googleMapLink: user.googleMapLink ?? "",
     });
   }, [user]);
@@ -95,6 +109,14 @@ export default function DoctorProfile() {
   const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
   const setAddr = (key, val) =>
     setForm((f) => ({ ...f, address: { ...f.address, [key]: val } }));
+  const setBank = (key, val) =>
+    setForm((f) => ({
+      ...f,
+      bankDetails: {
+        ...f.bankDetails,
+        [key]: val,
+      },
+    }));
 
   const toggleDay = (day) =>
     setForm((f) => ({
@@ -120,6 +142,7 @@ export default function DoctorProfile() {
     { id: "profile", label: "Profile & Fees" },
     { id: "schedule", label: "Schedule" },
     { id: "address", label: "Address" },
+    { id: "bank", label: "Bank Details" },
   ];
 
   return (
@@ -325,6 +348,45 @@ export default function DoctorProfile() {
                 value={form.googleMapLink}
                 onChange={(e) => set("googleMapLink", e.target.value)}
                 placeholder="https://maps.google.com/..."
+                className={inputCls}
+              />
+            </Field>
+          </div>
+        )}
+        {tab === "bank" && (
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Account Holder Name">
+              <input
+                value={form.bankDetails.accountHolderName}
+                onChange={(e) => setBank("accountHolderName", e.target.value)}
+                placeholder="Dr. John Smith"
+                className={inputCls}
+              />
+            </Field>
+
+            <Field label="Account Number">
+              <input
+                value={form.bankDetails.accountNumber}
+                onChange={(e) => setBank("accountNumber", e.target.value)}
+                placeholder="1234567890"
+                className={inputCls}
+              />
+            </Field>
+
+            <Field label="IFSC Code">
+              <input
+                value={form.bankDetails.ifscCode}
+                onChange={(e) => setBank("ifscCode", e.target.value)}
+                placeholder="SBIN0001234"
+                className={inputCls}
+              />
+            </Field>
+
+            <Field label="Bank Name">
+              <input
+                value={form.bankDetails.bankName}
+                onChange={(e) => setBank("bankName", e.target.value)}
+                placeholder="State bank of india"
                 className={inputCls}
               />
             </Field>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import Icon from "../../assets/Icon.svg";
+import logo from "../../assets/logo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,8 +19,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-gray-50 to-blue-50 flex flex-col items-center justify-center px-4">
       {/* Brand */}
       <div className="flex flex-col items-center mb-8 gap-2">
-        <div className="w-14 h-14 bg-[#008379] rounded-2xl flex items-center justify-center">
-          <img src={Icon} alt="logo" className="w-8 h-8" />
+        <div className=" rounded-2xl flex items-center justify-center">
+          <img src={logo} alt="logo" className="w-10 h-10" />
         </div>
         <h1 className="text-lg font-bold tracking-widest text-gray-900">
           PRESCRIPTO

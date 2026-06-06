@@ -320,7 +320,7 @@ export default function DoctorDashboard() {
               </p>
             </div>
             <div className="flex gap-1.5">
-              {["Daily", "Weekly"].map((tab, i) => (
+              {["Daily"].map((tab, i) => (
                 <button
                   key={tab}
                   className={clsx(

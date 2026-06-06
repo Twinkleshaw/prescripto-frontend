@@ -11,6 +11,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import logo from "../../assets/logo.png";
 import clsx from "clsx";
 
 const navItems = [
@@ -46,9 +47,7 @@ export default function AdminSidebar() {
       {/* Brand */}
       <div className="flex items-center gap-2.5 px-4 py-4 border-b border-gray-100">
         <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
-            <path d="M19 9h-1V7a6 6 0 00-12 0v2H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2v-9a2 2 0 00-2-2zm-7 8a2 2 0 110-4 2 2 0 010 4zm3-8H9V7a3 3 0 016 0v2z" />
-          </svg>
+          <img src={logo} alt="" />
         </div>
         <div>
           <p className="text-sm font-bold text-gray-900 leading-none">

@@ -134,12 +134,6 @@ export default function DoctorAppointments() {
   const total = data?.data?.totalAppointments ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
-  // Stat counts from current page (full counts need backend — this is approximate)
-  const pendingCount = appointments.filter((a) => a.status === "booked").length;
-  const completedCount = appointments.filter(
-    (a) => a.status === "completed",
-  ).length;
-
   // ── Cancel ────────────────────────────────────────────
   const { mutate: cancelMutate } = useMutation({
     mutationFn: cancelAppointmentApi,
@@ -210,10 +204,10 @@ export default function DoctorAppointments() {
             <img src={icon2} alt="" className="h-4 w-4" />
           </div>
           <p className="text-xs text-[#64748B] font-medium mb-2">
-            Offline payments
+            Unpaid Balance
           </p>
           <p className="text-2xl font-bold text-gray-900">
-            {data?.data?.totalOfflinePayments}
+            {data?.data?.totalPendingAmount}
           </p>
           {/* <p className="text-xs text-gray-400 mt-1">Capacity 88%</p> */}
         </div>
@@ -228,7 +222,7 @@ export default function DoctorAppointments() {
           </p>
           <div className="flex items-center gap-2">
             <p className="text-2xl font-bold text-gray-900">
-              {data?.data?.totalPayment}
+              {data?.data?.totalCollected}
             </p>
           </div>
         </div>
