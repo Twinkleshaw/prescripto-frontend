@@ -127,6 +127,8 @@ export default function AdminDashboard() {
 
   const firstName = user?.name || "Admin";
 
+  console.log("patient", recentAppointments);
+
   return (
     <div>
       {/* ── Header ── */}
@@ -285,9 +287,7 @@ export default function AdminDashboard() {
                               {name}
                             </p>
                             <p className="text-xs text-gray-400">
-                              ID: #
-                              {appt.patientId?._id?.slice(-5).toUpperCase() ||
-                                "—"}
+                              ID: #{appt?._id?.slice(-5).toUpperCase() || "—"}
                             </p>
                           </div>
                         </div>

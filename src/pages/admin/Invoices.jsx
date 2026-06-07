@@ -11,8 +11,8 @@ import { downloadInvoicePDF, getInvoices } from "../../api/endpoints/invoices";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const STATUS_STYLES = {
-  paid: { badge: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
-  pending: { badge: "bg-amber-50 text-amber-700", dot: "bg-amber-400" },
+  paid: { badge: "bg-[#DCFCE7] text-[#15803D]", dot: "bg-[#22C55E]" },
+  pending: { badge: "bg-[#FEF3C7] text-[#B45309]", dot: "bg-[#F59E0B]" },
   overdue: { badge: "bg-red-50 text-red-600", dot: "bg-red-500" },
 };
 
@@ -175,7 +175,7 @@ export default function Invoices() {
           <>
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100">
+                <tr className="">
                   {[
                     "ID",
                     "Patient",
@@ -186,7 +186,7 @@ export default function Invoices() {
                   ].map((col) => (
                     <th
                       key={col}
-                      className="px-4 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider"
+                      className="px-4 py-3 text-left text-[11px] bg-[#F2F4F680] font-semibold text-[#94A3B8] uppercase tracking-wider"
                     >
                       {col}
                     </th>
@@ -220,7 +220,7 @@ export default function Invoices() {
                       >
                         {/* ID */}
                         <td className="px-4 py-4">
-                          <span className="text-xs font-medium text-indigo-500">
+                          <span className="text-xs font-bold text-[#94A3B8]">
                             #{inv.invoiceId}
                           </span>
                         </td>
@@ -252,7 +252,7 @@ export default function Invoices() {
                         {/* Status */}
                         <td className="px-4 py-4">
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${style.badge}`}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${style.badge}`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${style.dot}`}

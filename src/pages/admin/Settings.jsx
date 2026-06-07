@@ -41,7 +41,7 @@ function getCompleteness(user, role) {
     { label: "Name added", done: !!user?.name },
     { label: "Email verified", done: !!user?.email },
     { label: "Phone added", done: !!user?.phone },
-    { label: "Profile photo", done: !!user?.image },
+    { label: "Profile photo", done: !!user?.profileImage },
     ...(role === "doctor"
       ? [
           { label: "Speciality set", done: !!user?.speciality },
@@ -179,7 +179,6 @@ export default function Settings() {
   );
   const [avatarFile, setAvatarFile] = useState(null);
   const fileRef = useRef(null);
-  console.log("show this ", avatarPreview);
   useEffect(() => {
     setProfile({ name: user?.name ?? "", phone: user?.phone ?? "" });
     setAvatarPreview(getImageUrl(user?.profileImage) ?? null);

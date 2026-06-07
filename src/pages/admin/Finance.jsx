@@ -6,12 +6,12 @@ import {
   Wallet,
   Loader2,
   AlertCircle,
-  Users,
   CreditCard,
   ArrowUpRight,
   Download,
 } from "lucide-react";
 import { exportFinanceCSV, getFinanceData } from "../../api/endpoints/invoices";
+import icon from "../../assets/admin_dash_4.png";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (n) =>
@@ -43,7 +43,7 @@ const getInitials = (name = "") =>
 
 const STATUS_STYLES = {
   pending: {
-    badge: "bg-red-50 text-red-500 border border-red-100",
+    badge: "bg-[#FFDAD6] text-[#93000A] border border-red-100",
     label: "Pending",
   },
   paid: {
@@ -150,7 +150,7 @@ export default function Finance() {
       {/* ── Top Stats Row ── */}
       <div className="grid grid-cols-3 gap-4">
         {/* Total User Payments — hero card */}
-        <div className="col-span-2 relative bg-[#00736a] rounded-2xl p-6 overflow-hidden">
+        <div className="col-span-2 relative bg-[#006860] rounded-2xl p-6 overflow-hidden">
           {/* watermark icon */}
           <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-10">
             <Wallet size={120} strokeWidth={1} className="text-white" />
@@ -162,7 +162,7 @@ export default function Finance() {
             {fmt(data?.totalCollected)}
           </p>
           <div className="flex gap-3">
-            <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-lg px-3 py-1.5">
+            {/* <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-lg px-3 py-1.5">
               <TrendingUp size={13} className="text-teal-200" />
               <span className="text-xs font-semibold text-white">
                 +
@@ -173,7 +173,7 @@ export default function Finance() {
                 %
               </span>
               <span className="text-[10px] text-teal-200">collected</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-lg px-3 py-1.5">
               <CreditCard size={13} className="text-teal-200" />
               <span className="text-xs font-semibold text-white">
@@ -185,8 +185,8 @@ export default function Finance() {
 
         {/* Total Doctor Payments */}
         <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col justify-between">
-          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mb-3">
-            <CreditCard size={18} className="text-blue-500" />
+          <div className="w-10 h-10 bg-[#D2E4FF] rounded-xl flex items-center justify-center mb-3">
+            <img src={icon} alt="" />
           </div>
           <div>
             <p className="text-xs text-gray-400 font-medium mb-1">
@@ -217,9 +217,9 @@ export default function Finance() {
                 </div>
               )}
             </div>
-            <button className="text-xs font-semibold text-[#008379] hover:underline flex items-center gap-1">
+            {/* <button className="text-xs font-semibold text-[#008379] hover:underline flex items-center gap-1">
               Manage Payouts <ArrowUpRight size={12} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -232,15 +232,14 @@ export default function Finance() {
             <p className="text-[11px] font-semibold tracking-widest text-gray-500 uppercase">
               Doctor Records
             </p>
-            <Users size={14} className="text-gray-400" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 bg-[#F2F4F6] p-2 rounded-xl">
             {doctorPayments.map((doc) => {
               const c = getAvatarColor(doc.doctorName);
               return (
                 <div
                   key={doc._id}
-                  className="bg-white border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 hover:border-teal-200 transition-colors"
+                  className="bg-white  rounded-xl px-4 py-3 flex items-center gap-3 hover:border-teal-200 transition-colors"
                 >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${c.bg} ${c.text}`}
@@ -275,7 +274,7 @@ export default function Finance() {
             <button
               onClick={handleExportCSV}
               disabled={exporting}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#008379] bg-teal-50 hover:bg-teal-100 border border-teal-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#006860] hover:bg-teal-100 border border-teal-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {exporting ? (
                 <Loader2 size={13} className="animate-spin" />
@@ -288,12 +287,12 @@ export default function Finance() {
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100">
+                <tr className="bg-[#F2F4F6]">
                   {["Transaction ID", "Name", "Method", "Amount", "Status"].map(
                     (col) => (
                       <th
                         key={col}
-                        className="px-4 py-3 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider"
+                        className="px-4 py-3 text-left text-[10px] font-semibold text-[#64748B] uppercase tracking-wider"
                       >
                         {col}
                       </th>
@@ -379,7 +378,7 @@ export default function Finance() {
                         {/* Status */}
                         <td className="px-4 py-3">
                           <span
-                            className={`text-[10px] font-semibold px-2.5 py-1 rounded-md ${style.badge}`}
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-md ${style.badge}`}
                           >
                             {style.label.toUpperCase()}
                           </span>
