@@ -18,6 +18,7 @@ import {
 import AddDoctorModal from "../../components/admin/AddDoctorModal";
 import EditDoctorModal from "../../components/admin/EditDoctorModal";
 import doctorImg from "../../assets/doctor.png";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 export default function AdminDoctors() {
   const [page, setPage] = useState(1);
@@ -188,7 +189,7 @@ export default function AdminDoctors() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img
-                            src={doc?.image || doctorImg}
+                            src={getImageUrl(doc?.image) || doctorImg}
                             alt={doc?.name}
                             className="w-9 h-9 rounded-full object-cover shrink-0 border border-gray-100"
                           />

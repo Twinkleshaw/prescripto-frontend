@@ -5,7 +5,9 @@ export const deleteDoctor = (id) => api.delete(`admin/doctor/${id}`);
 export const createDoctor = (data) => api.post("/auth/create-doctor", data);
 
 export const updateDoctor = (id, data) =>
-  api.put(`/admin/update-doctor/${id}`, data);
+  api.put(`/admin/update-doctor/${id}`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
 export const doctorUpdateProfile = (data) =>
   api.put(`/doctor/update-profile`, data);

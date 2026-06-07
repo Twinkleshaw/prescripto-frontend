@@ -203,7 +203,9 @@ export default function AdminPatients() {
                         </div>
                       </td>
                       {/* Invoice */}
-                      <td className="px-4 py-3 text-xs text-[#475569] font-mono"></td>
+                      <td className="px-4 py-3 text-[14px]  text-[#475569] font-mono font-bold">
+                        {p?.invoiceId}
+                      </td>
 
                       {/* date */}
                       <td className="px-4 py-3 text-[14px]  text-[#475569]">

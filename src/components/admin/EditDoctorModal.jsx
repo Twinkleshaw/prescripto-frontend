@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, User } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateDoctor } from "../../api/endpoints/doctor";
 import clsx from "clsx";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const DAYS = [
   "Monday",
@@ -55,11 +56,31 @@ function Toggle({ label, checked, onChange }) {
 export default function EditDoctorModal({ doctor, onClose }) {
   const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
+  const [imageFile, setImageFile] = useState(null);
+  const fileRef = useRef(null);
+
+  const [imagePreview, setImagePreview] = useState(
+    getImageUrl(doctor?.image) || null,
+  );
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Maximum image size is 5MB");
+      return;
+    }
+
+    setImageFile(file);
+
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   // Pre-fill form with existing doctor data
   const [form, setForm] = useState({
     speciality: "",
-    specialtyBengali: "",
+    specialityBengali: "",
     degree: "",
     experience: "",
     description: "",
@@ -90,9 +111,10 @@ export default function EditDoctorModal({ doctor, onClose }) {
   // Populate form when doctor prop changes
   useEffect(() => {
     if (!doctor) return;
+    setImagePreview(getImageUrl(doctor?.image) || null);
     setForm({
       speciality: doctor.speciality ?? "",
-      specialtyBengali: doctor.specialtyBengali ?? "",
+      specialityBengali: doctor.specialityBengali ?? "",
       degree: doctor.degree ?? "",
       experience: doctor.experience ?? "",
       description: doctor.description ?? "",
@@ -155,7 +177,24 @@ export default function EditDoctorModal({ doctor, onClose }) {
 
   const handleSubmit = () => {
     console.log("handlesbumit", doctor?._id);
-    mutate({ id: doctor?._id, data: form });
+    const formData = new FormData();
+
+    Object.entries(form).forEach(([key, value]) => {
+      if (typeof value === "object" && value !== null) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    mutate({
+      id: doctor?._id,
+      data: formData,
+    });
   };
 
   const steps = [
@@ -233,16 +272,14 @@ export default function EditDoctorModal({ doctor, onClose }) {
                   className={inputCls}
                 />
               </Field>
-
               <Field label="Speciality (Bengali)">
                 <input
-                  value={form.specialtyBengali}
-                  onChange={(e) => set("specialtyBengali", e.target.value)}
+                  value={form.specialityBengali}
+                  onChange={(e) => set("specialityBengali", e.target.value)}
                   placeholder="বিশেষত্ব"
                   className={inputCls}
                 />
               </Field>
-
               <Field label="Degree">
                 <input
                   value={form.degree}
@@ -251,7 +288,6 @@ export default function EditDoctorModal({ doctor, onClose }) {
                   className={inputCls}
                 />
               </Field>
-
               <Field label="Experience">
                 <input
                   value={form.experience}
@@ -260,7 +296,6 @@ export default function EditDoctorModal({ doctor, onClose }) {
                   className={inputCls}
                 />
               </Field>
-
               <Field label="Consultation Fees (₹)">
                 <input
                   type="number"
@@ -271,14 +306,39 @@ export default function EditDoctorModal({ doctor, onClose }) {
                   className={inputCls}
                 />
               </Field>
-
-              <Field label="Profile Image URL">
-                <input
-                  value={form.image}
-                  onChange={(e) => set("image", e.target.value)}
-                  placeholder="https://..."
-                  className={inputCls}
-                />
+              <Field label="Profile Image">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={16} className="text-gray-400" />
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  >
+                    Choose Photo
+                  </button>
+                  {imageFile && (
+                    <span className="text-xs text-gray-400 truncate max-w-[120px]">
+                      {imageFile.name}
+                    </span>
+                  )}
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </div>
               </Field>
 
               <Field label="Description" full>
@@ -290,7 +350,6 @@ export default function EditDoctorModal({ doctor, onClose }) {
                   className={clsx(inputCls, "resize-none")}
                 />
               </Field>
-
               {/* Toggles */}
               <div className="col-span-2 flex gap-8 pt-1">
                 <Toggle
