@@ -48,7 +48,7 @@ const formatDate = (d) =>
   });
 
 const formatAmount = (a) =>
-  "$" + Number(a).toLocaleString("en-US", { minimumFractionDigits: 2 });
+  "₹" + Number(a).toLocaleString("en-US", { minimumFractionDigits: 2 });
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const PER_PAGE = 6;

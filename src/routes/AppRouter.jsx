@@ -14,6 +14,9 @@ import DoctorPayment from "../pages/doctor/Payment";
 import Settings from "../pages/admin/Settings";
 import Finance from "../pages/admin/Finance";
 import Invoices from "../pages/admin/Invoices";
+import JoinAsDoctor from "../pages/JoinAsDoctor";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import RefundPolicy from "../pages/RefundPolicy";
 
 export default function AppRouter() {
   return (
@@ -21,6 +24,9 @@ export default function AppRouter() {
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
+        <Route path="/join-as-doctor" element={<JoinAsDoctor />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
 
         {/* Admin */}
         <Route
@@ -36,7 +42,7 @@ export default function AppRouter() {
           <Route path="patients" element={<AdminPatients />} />
           <Route path="appointments" element={<AdminAppointments />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="Financials" element={<Finance />} />
+          <Route path="financials" element={<Finance />} />
           <Route path="invoices" element={<Invoices />} />
           {/* Add admin pages here as nested routes */}
         </Route>

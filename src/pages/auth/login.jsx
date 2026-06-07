@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import logo from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [keepSigned, setKeepSigned] = useState(false);
+  const navigate = useNavigate();
   const { login, loading, error } = useAuth();
 
   const handleSubmit = (e) => {
@@ -140,11 +142,17 @@ export default function Login() {
             Contact System Admin
           </span> */}
           <div className="flex justify-center gap-4 mt-2">
-            <span className="text-xs text-gray-400 cursor-pointer hover:text-gray-600">
+            <span
+              className="text-xs text-gray-400 cursor-pointer hover:text-gray-600"
+              onClick={() => navigate("/privacy-policy")}
+            >
               Privacy Policy
             </span>
-            <span className="text-xs text-gray-400 cursor-pointer hover:text-gray-600">
-              Terms of Service
+            <span
+              className="text-xs text-gray-400 cursor-pointer hover:text-gray-600"
+              onClick={() => navigate("/refund-policy")}
+            >
+              Refund Policy
             </span>
           </div>
         </div>

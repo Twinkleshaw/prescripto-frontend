@@ -15,7 +15,7 @@ import icon from "../../assets/admin_dash_4.png";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (n) =>
-  "$" + Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2 });
+  "₹" + Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2 });
 
 const AVATAR_COLORS = [
   { bg: "bg-blue-100", text: "text-blue-700" },
