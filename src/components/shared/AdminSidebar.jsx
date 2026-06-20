@@ -33,7 +33,7 @@ const navItems = [
 export default function AdminSidebar({ open = false, onClose = () => {} }) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-
+  console.log(getImageUrl(user?.profileImage));
   const handleLogout = () => {
     logout();
     navigate("/login");

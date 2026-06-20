@@ -184,11 +184,13 @@ export default function AdminAppointments() {
   };
 
   return (
-    <div>
+    <div className="px-4 sm:px-0">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">All Appointments</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            All Appointments
+          </h1>
           <p className="text-sm text-gray-400 mt-1">
             View and manage all patient appointments
           </p>
@@ -196,7 +198,7 @@ export default function AdminAppointments() {
         <div>
           <button
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-[#E6E8EA] border border-gray-200 rounded-xl "
+            className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-[#E6E8EA] border border-gray-200 rounded-xl w-full sm:w-auto whitespace-nowrap"
           >
             <Download size={13} /> Export Data
           </button>
@@ -204,36 +206,42 @@ export default function AdminAppointments() {
       </div>
 
       {/* ── Summary stat card ── */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-5">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 mb-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
               <img src={icon1} alt="" />
             </div>
             <div>
               <p className="text-xs text-gray-400 font-medium">
                 Total Appointments
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">
                 {total.toLocaleString()}
               </p>
             </div>
           </div>
 
           {/* Status breakdown */}
-          <div className="flex gap-6">
+          <div className="flex justify-between sm:justify-end gap-4 sm:gap-6">
             <div className="text-center">
-              <p className="text-xl font-bold ">{data?.data?.totalCompleted}</p>
+              <p className="text-lg sm:text-xl font-bold ">
+                {data?.data?.totalCompleted}
+              </p>
               <p className="text-xs font-bold text-gray-400">Completed</p>
             </div>
             <div className="w-px bg-gray-100" />
             <div className="text-center">
-              <p className="text-xl font-bold "> {data?.data?.totalPending}</p>
+              <p className="text-lg sm:text-xl font-bold ">
+                {data?.data?.totalPending}
+              </p>
               <p className="text-xs font-bold text-gray-400">Pending</p>
             </div>
             <div className="w-px bg-gray-100" />
             <div className="text-center">
-              <p className="text-xl font-bold ">{data?.data?.totalCancelled}</p>
+              <p className="text-lg sm:text-xl font-bold ">
+                {data?.data?.totalCancelled}
+              </p>
               <p className="text-xs font-bold text-gray-400">Cancelled</p>
             </div>
           </div>
@@ -243,9 +251,9 @@ export default function AdminAppointments() {
       {/* ── Table ── */}
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
         {/* Table toolbar */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-5 py-4 border-b border-gray-100">
           <h2 className="text-sm font-bold text-gray-900">Appointment List</h2>
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
+          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 w-full sm:w-auto">
             <svg
               className="w-3 h-3 stroke-gray-400 fill-none shrink-0"
               strokeWidth="2"
@@ -259,12 +267,12 @@ export default function AdminAppointments() {
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search appointments..."
-              className="bg-transparent text-xs text-gray-600 outline-none w-44 placeholder:text-gray-400"
+              className="bg-transparent text-xs text-gray-600 outline-none w-full sm:w-44 placeholder:text-gray-400"
             />
             {search && (
               <button
                 onClick={() => handleSearch("")}
-                className="text-gray-400 hover:text-gray-600 text-xs"
+                className="text-gray-400 hover:text-gray-600 text-xs shrink-0"
               >
                 ✕
               </button>
@@ -281,151 +289,239 @@ export default function AdminAppointments() {
           <div className="flex items-center justify-center py-16 text-sm text-red-400">
             Failed to load appointments.
           </div>
+        ) : appointments.length === 0 ? (
+          <div className="text-center py-12 text-sm text-gray-400">
+            No appointments found.
+          </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100 ">
-                {["Patient", "Doctor", "Date", "Time", "Status", "Actions"].map(
-                  (h) => (
-                    <th
-                      key={h}
-                      className="text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
-                    >
-                      {h}
-                    </th>
-                  ),
-                )}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {appointments.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="text-center py-12 text-sm text-gray-400"
+          <>
+            {/* ── Mobile / tablet card list ── */}
+            <div className="md:hidden divide-y divide-gray-50">
+              {appointments.map((appt, idx) => {
+                const statusInfo = STATUS_MAP[appt.status] || {
+                  label: appt.status,
+                  cls: "bg-gray-100 text-gray-500 border-gray-200",
+                };
+                const isActioning = loadingId === appt._id;
+
+                return (
+                  <div
+                    key={appt._id}
+                    className={clsx("px-4 py-3.5", isActioning && "opacity-50")}
                   >
-                    No appointments found.
-                  </td>
-                </tr>
-              ) : (
-                appointments.map((appt, idx) => {
-                  const statusInfo = STATUS_MAP[appt.status] || {
-                    label: appt.status,
-                    cls: "bg-gray-100 text-gray-500 border-gray-200",
-                  };
-                  const isActioning = loadingId === appt._id;
-
-                  return (
-                    <tr
-                      key={appt._id}
-                      className={clsx(
-                        "hover:bg-gray-50/50 transition-colors",
-                        isActioning && "opacity-50",
-                      )}
-                    >
-                      {/* Patient */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={clsx(
-                              "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
-                              AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                            )}
-                          >
-                            {getInitials(
-                              appt.patientName || appt.patientId?.name || "",
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {appt.patientName || appt.patientId?.name || "—"}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Age: {appt.patientAge ?? "—"}
-                            </p>
-                          </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className={clsx(
+                            "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                            AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                          )}
+                        >
+                          {getInitials(
+                            appt.patientName || appt.patientId?.name || "",
+                          )}
                         </div>
-                      </td>
-
-                      {/* Doctor */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={clsx(
-                              "w-1.5 h-1.5 rounded-full shrink-0",
-                              appt.status === "completed"
-                                ? "bg-primary"
-                                : appt.status === "booked"
-                                  ? "bg-amber-400"
-                                  : "bg-red-400",
-                            )}
-                          />
-                          <span className="text-sm text-gray-700">
-                            {appt.doctorId?.name || "—"}
-                          </span>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {appt.patientName || appt.patientId?.name || "—"}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            Age: {appt.patientAge ?? "—"}
+                          </p>
                         </div>
-                      </td>
+                      </div>
 
-                      {/* Date */}
-                      <td className="px-5 py-3.5">
-                        <p className="text-sm font-medium text-gray-800">
-                          {fmt(appt.date)}
-                        </p>
-                      </td>
+                      <ActionMenu
+                        appt={appt}
+                        onComplete={completeMutate}
+                        onCancel={cancelMutate}
+                        loadingId={loadingId}
+                      />
+                    </div>
 
-                      {/* Time */}
-                      <td className="px-5 py-3.5">
-                        <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700">
-                          {fmtTime(appt.time)}
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={clsx(
+                            "w-1.5 h-1.5 rounded-full shrink-0",
+                            appt.status === "completed"
+                              ? "bg-primary"
+                              : appt.status === "booked"
+                                ? "bg-amber-400"
+                                : "bg-red-400",
+                          )}
+                        />
+                        <span className="text-sm text-gray-700">
+                          {appt.doctorId?.name || "—"}
                         </span>
-                      </td>
+                      </div>
+                      <span
+                        className={clsx(
+                          "text-[10px] font-bold px-2.5 py-1 rounded-full border tracking-wide",
+                          statusInfo.cls,
+                        )}
+                      >
+                        {statusInfo.label.toUpperCase()}
+                      </span>
+                    </div>
 
-                      {/* Token */}
-                      {/* <td className="px-5 py-3.5">
+                    <div className="flex items-center justify-between mt-3 text-sm">
+                      <p className="font-medium text-gray-800">
+                        {fmt(appt.date)}
+                      </p>
+                      <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700">
+                        {fmtTime(appt.time)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── Desktop table ── */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full min-w-[780px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100 ">
+                    {[
+                      "Patient",
+                      "Doctor",
+                      "Date",
+                      "Time",
+                      "Status",
+                      "Actions",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left text-[12px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {appointments.map((appt, idx) => {
+                    const statusInfo = STATUS_MAP[appt.status] || {
+                      label: appt.status,
+                      cls: "bg-gray-100 text-gray-500 border-gray-200",
+                    };
+                    const isActioning = loadingId === appt._id;
+
+                    return (
+                      <tr
+                        key={appt._id}
+                        className={clsx(
+                          "hover:bg-gray-50/50 transition-colors",
+                          isActioning && "opacity-50",
+                        )}
+                      >
+                        {/* Patient */}
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={clsx(
+                                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                                AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                              )}
+                            >
+                              {getInitials(
+                                appt.patientName || appt.patientId?.name || "",
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {appt.patientName ||
+                                  appt.patientId?.name ||
+                                  "—"}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                Age: {appt.patientAge ?? "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Doctor */}
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={clsx(
+                                "w-1.5 h-1.5 rounded-full shrink-0",
+                                appt.status === "completed"
+                                  ? "bg-primary"
+                                  : appt.status === "booked"
+                                    ? "bg-amber-400"
+                                    : "bg-red-400",
+                              )}
+                            />
+                            <span className="text-sm text-gray-700">
+                              {appt.doctorId?.name || "—"}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Date */}
+                        <td className="px-5 py-3.5">
+                          <p className="text-sm font-medium text-gray-800">
+                            {fmt(appt.date)}
+                          </p>
+                        </td>
+
+                        {/* Time */}
+                        <td className="px-5 py-3.5">
+                          <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700">
+                            {fmtTime(appt.time)}
+                          </span>
+                        </td>
+
+                        {/* Token */}
+                        {/* <td className="px-5 py-3.5">
                         <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
                           #{appt.tokenNumber ?? "—"}
                         </span>
                       </td> */}
 
-                      {/* Status */}
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={clsx(
-                            "text-[10px] font-bold px-2.5 py-1 rounded-full border tracking-wide",
-                            statusInfo.cls,
-                          )}
-                        >
-                          {statusInfo.label.toUpperCase()}
-                        </span>
-                      </td>
+                        {/* Status */}
+                        <td className="px-5 py-3.5">
+                          <span
+                            className={clsx(
+                              "text-[10px] font-bold px-2.5 py-1 rounded-full border tracking-wide",
+                              statusInfo.cls,
+                            )}
+                          >
+                            {statusInfo.label.toUpperCase()}
+                          </span>
+                        </td>
 
-                      {/* Actions */}
-                      <td className="px-5 py-3.5">
-                        <ActionMenu
-                          appt={appt}
-                          onComplete={completeMutate}
-                          onCancel={cancelMutate}
-                          loadingId={loadingId}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                        {/* Actions */}
+                        <td className="px-5 py-3.5">
+                          <ActionMenu
+                            appt={appt}
+                            onComplete={completeMutate}
+                            onCancel={cancelMutate}
+                            loadingId={loadingId}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {/* Pagination */}
         {!isLoading && !isError && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100">
-            <span className="text-xs text-gray-400">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 px-4 sm:px-5 py-3 border-t border-gray-100">
+            <span className="text-xs text-gray-400 text-center sm:text-left">
               Showing{" "}
               {total === 0 ? 0 : Math.min((page - 1) * limit + 1, total)}–
               {Math.min(page * limit, total)} of {total.toLocaleString()}{" "}
               appointments
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap justify-center">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}

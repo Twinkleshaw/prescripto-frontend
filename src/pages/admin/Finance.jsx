@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   Download,
 } from "lucide-react";
+import clsx from "clsx";
 import { exportFinanceCSV, getFinanceData } from "../../api/endpoints/invoices";
 import icon from "../../assets/admin_dash_4.png";
 
@@ -146,19 +147,28 @@ export default function Finance() {
   const topDoctors = doctorPayments.slice(0, 4);
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-4 sm:p-6 space-y-5">
       {/* ── Top Stats Row ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total User Payments — hero card */}
-        <div className="col-span-2 relative bg-[#006860] rounded-2xl p-6 overflow-hidden">
+        <div className="sm:col-span-2 relative bg-[#006860] rounded-2xl p-5 sm:p-6 overflow-hidden">
           {/* watermark icon */}
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-10">
-            <Wallet size={120} strokeWidth={1} className="text-white" />
+          <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 opacity-10">
+            <Wallet
+              size={90}
+              strokeWidth={1}
+              className="text-white sm:hidden"
+            />
+            <Wallet
+              size={120}
+              strokeWidth={1}
+              className="text-white hidden sm:block"
+            />
           </div>
           <p className="text-[11px] font-semibold tracking-widest text-teal-200 uppercase mb-3">
             Total User Payments Received
           </p>
-          <p className="text-4xl font-bold text-white mb-5">
+          <p className="text-3xl sm:text-4xl font-bold text-white mb-5 truncate">
             {fmt(data?.totalCollected)}
           </p>
           <div className="flex gap-3">
@@ -192,7 +202,7 @@ export default function Finance() {
             <p className="text-xs text-gray-400 font-medium mb-1">
               Total Doctor Payments
             </p>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
               {fmt(
                 doctorPayments.reduce((s, d) => s + (d.totalCollected || 0), 0),
               )}
@@ -225,9 +235,9 @@ export default function Finance() {
       </div>
 
       {/* ── Bottom Row: Doctor Records + Payments Table ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Doctor Records */}
-        <div className="col-span-1">
+        <div className="lg:col-span-1">
           <div className="flex items-center justify-between mb-3">
             <p className="text-[11px] font-semibold tracking-widest text-gray-500 uppercase">
               Doctor Records
@@ -266,8 +276,8 @@ export default function Finance() {
         </div>
 
         {/* Payments Table */}
-        <div className="col-span-2">
-          <div className="flex items-center justify-between mb-3">
+        <div className="lg:col-span-2">
+          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
             <p className="text-[11px] font-semibold tracking-widest text-gray-500 uppercase">
               Pending Approvals
             </p>
@@ -285,33 +295,15 @@ export default function Finance() {
             </button>
           </div>
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#F2F4F6]">
-                  {["Transaction ID", "Name", "Method", "Amount", "Status"].map(
-                    (col) => (
-                      <th
-                        key={col}
-                        className="px-4 py-3 text-left text-[10px] font-semibold text-[#64748B] uppercase tracking-wider"
-                      >
-                        {col}
-                      </th>
-                    ),
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {pageRows.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="py-12 text-center text-sm text-gray-400"
-                    >
-                      No payments found
-                    </td>
-                  </tr>
-                ) : (
-                  pageRows.map((pay) => {
+            {pageRows.length === 0 ? (
+              <div className="py-12 text-center text-sm text-gray-400">
+                No payments found
+              </div>
+            ) : (
+              <>
+                {/* ── Mobile / tablet card list ── */}
+                <div className="md:hidden divide-y divide-gray-50">
+                  {pageRows.map((pay) => {
                     const status =
                       pay.paymentStatus?.toLowerCase() || "pending";
                     const style =
@@ -320,38 +312,32 @@ export default function Finance() {
                     const txId = `#VT-TXN-${String(pay._id).slice(-5).toUpperCase()}`;
 
                     return (
-                      <tr
-                        key={pay._id}
-                        className="border-b border-gray-50 last:border-none hover:bg-gray-50 transition-colors"
-                      >
-                        {/* Transaction ID */}
-                        <td className="px-4 py-3">
-                          <span className="text-[11px] font-medium text-gray-500">
-                            {txId}
-                          </span>
-                        </td>
-
-                        {/* Name */}
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
+                      <div key={pay._id} className="px-4 py-3.5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
                             <div
-                              className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${color.bg} ${color.text}`}
+                              className={`w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${color.bg} ${color.text}`}
                             >
                               {getInitials(pay.patientName || "")}
                             </div>
-                            <div>
-                              <p className="text-xs font-semibold text-gray-900 leading-tight">
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-900 leading-tight truncate">
                                 {pay.patientName}
                               </p>
-                              <p className="text-[10px] text-gray-400">
+                              <p className="text-[10px] text-gray-400 truncate">
                                 {pay.doctorId?.speciality?.trim() || "—"}
                               </p>
                             </div>
                           </div>
-                        </td>
+                          <span
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-md shrink-0 ${style.badge}`}
+                          >
+                            {style.label.toUpperCase()}
+                          </span>
+                        </div>
 
-                        {/* Method */}
-                        <td className="px-4 py-3">
+                        <div className="flex items-center justify-between mt-3 text-[11px] text-gray-500">
+                          <span>{txId}</span>
                           <div className="flex items-center gap-1.5">
                             <span
                               className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
@@ -360,39 +346,130 @@ export default function Finance() {
                                   : "bg-gray-300"
                               }`}
                             />
-                            <span className="text-[11px] text-gray-500">
+                            <span>
                               {pay.paymentType === "online"
                                 ? `${pay.patientName?.toLowerCase().replace(" ", ".")}.upi`
                                 : "Pay at Clinic"}
                             </span>
                           </div>
-                        </td>
+                        </div>
 
-                        {/* Amount */}
-                        <td className="px-4 py-3">
+                        <div className="mt-2">
                           <span className="text-sm font-bold text-gray-900">
                             {fmt(pay.amount)}
                           </span>
-                        </td>
-
-                        {/* Status */}
-                        <td className="px-4 py-3">
-                          <span
-                            className={`text-[10px] font-bold px-2.5 py-1 rounded-md ${style.badge}`}
-                          >
-                            {style.label.toUpperCase()}
-                          </span>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     );
-                  })
-                )}
-              </tbody>
-            </table>
+                  })}
+                </div>
+
+                {/* ── Desktop table ── */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full min-w-[640px]">
+                    <thead>
+                      <tr className="bg-[#F2F4F6]">
+                        {[
+                          "Transaction ID",
+                          "Name",
+                          "Method",
+                          "Amount",
+                          "Status",
+                        ].map((col) => (
+                          <th
+                            key={col}
+                            className="px-4 py-3 text-left text-[10px] font-semibold text-[#64748B] uppercase tracking-wider"
+                          >
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pageRows.map((pay) => {
+                        const status =
+                          pay.paymentStatus?.toLowerCase() || "pending";
+                        const style =
+                          STATUS_STYLES[status] || STATUS_STYLES.pending;
+                        const color = getAvatarColor(pay.patientName || "");
+                        const txId = `#VT-TXN-${String(pay._id).slice(-5).toUpperCase()}`;
+
+                        return (
+                          <tr
+                            key={pay._id}
+                            className="border-b border-gray-50 last:border-none hover:bg-gray-50 transition-colors"
+                          >
+                            {/* Transaction ID */}
+                            <td className="px-4 py-3">
+                              <span className="text-[11px] font-medium text-gray-500">
+                                {txId}
+                              </span>
+                            </td>
+
+                            {/* Name */}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${color.bg} ${color.text}`}
+                                >
+                                  {getInitials(pay.patientName || "")}
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-gray-900 leading-tight">
+                                    {pay.patientName}
+                                  </p>
+                                  <p className="text-[10px] text-gray-400">
+                                    {pay.doctorId?.speciality?.trim() || "—"}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Method */}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                                    pay.paymentType === "online"
+                                      ? "bg-emerald-400"
+                                      : "bg-gray-300"
+                                  }`}
+                                />
+                                <span className="text-[11px] text-gray-500">
+                                  {pay.paymentType === "online"
+                                    ? `${pay.patientName?.toLowerCase().replace(" ", ".")}.upi`
+                                    : "Pay at Clinic"}
+                                </span>
+                              </div>
+                            </td>
+
+                            {/* Amount */}
+                            <td className="px-4 py-3">
+                              <span className="text-sm font-bold text-gray-900">
+                                {fmt(pay.amount)}
+                              </span>
+                            </td>
+
+                            {/* Status */}
+                            <td className="px-4 py-3">
+                              <span
+                                className={`text-[10px] font-bold px-2.5 py-1 rounded-md ${style.badge}`}
+                              >
+                                {style.label.toUpperCase()}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-              <p className="text-xs text-gray-400">
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-2 px-4 py-3 border-t border-gray-100">
+              <p className="text-xs text-gray-400 text-center sm:text-left">
                 Showing{" "}
                 <span className="font-medium text-gray-700">
                   {payments.length === 0 ? 0 : start + 1}–
