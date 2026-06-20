@@ -56,7 +56,7 @@ export default function AdminPatients() {
 
   // ── Select patient — fetch detail ─────────────────────
   const handleSelect = async (p) => {
-    if (selected?.user?._id === p?.bookedBy) {
+    if (selected?.clickedPatient?._id === p?._id) {
       setSelected(null);
       return;
     }
@@ -89,13 +89,15 @@ export default function AdminPatients() {
   };
 
   return (
-    <div className="flex gap-5 min-h-0">
+    <div className="flex flex-col lg:flex-row gap-5 min-h-0 px-4 sm:px-0">
       {/* ── LEFT — Patient list ── */}
       <div className="flex-1 min-w-0">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">All Patients</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              All Patients
+            </h1>
             <p className="text-sm text-gray-400 mt-0.5">
               Managing {total.toLocaleString()} active records
             </p>
@@ -103,7 +105,7 @@ export default function AdminPatients() {
         </div>
 
         {/* Search */}
-        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2.5 mb-4 w-full max-w-sm">
+        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2.5 mb-4 w-full sm:max-w-sm">
           <svg
             className="w-3.5 h-3.5 stroke-gray-400 fill-none shrink-0"
             strokeWidth="2"
@@ -122,14 +124,14 @@ export default function AdminPatients() {
           {search && (
             <button
               onClick={() => handleSearch("")}
-              className="text-gray-400 hover:text-gray-600 text-xs"
+              className="text-gray-400 hover:text-gray-600 text-xs shrink-0"
             >
               ✕
             </button>
           )}
         </div>
 
-        {/* Table */}
+        {/* List */}
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center py-16 text-sm text-gray-400">
@@ -139,125 +141,199 @@ export default function AdminPatients() {
             <div className="flex items-center justify-center py-16 text-sm text-red-400">
               Failed to load patients.
             </div>
+          ) : patients.length === 0 ? (
+            <div className="text-center py-12 text-sm text-gray-400">
+              No patients found.
+            </div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#F2F4F6] ">
-                  {[
-                    "Patient Name",
-                    "Invoice Id",
-                    "Date",
-                    "Doctor",
-                    "Status",
-                    "Action",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="text-left text-[11px] font-semibold text-[#64748B] uppercase tracking-wider px-4 py-3"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 ">
-                {patients.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="text-center py-12 text-sm text-gray-400"
-                    >
-                      No patients found.
-                    </td>
-                  </tr>
-                ) : (
-                  patients.map((p, idx) => (
-                    <tr
-                      key={p._id}
-                      className={clsx(
-                        "hover:bg-teal-50/40 cursor-pointer transition-colors",
-                        selected?._id === p._id && "bg-teal-50/60",
-                      )}
-                    >
-                      {/* Name */}
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={clsx(
-                              "w-10 h-10 rounded-full flex items-center justify-center text-[16px] font-bold shrink-0",
-                              AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                            )}
-                          >
-                            {getInitials(p?.patientName || "")}
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-[#475569]">
-                              {p?.patientName || "—"}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {p?.patientAge ? `Age ${p.patientAge}` : ""}
-                              {p?.patientAge && p?.patientGender ? " · " : ""}
-                              {p?.patientGender || ""}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      {/* Invoice */}
-                      <td className="px-4 py-3 text-[14px]  text-[#475569] font-mono font-bold">
-                        {p?.invoiceId}
-                      </td>
-
-                      {/* date */}
-                      <td className="px-4 py-3 text-[14px]  text-[#475569]">
-                        {formatDate(p?.latestAppointmentCreatedAt)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-semibold text-gray-500 shrink-0">
-                            {getInitials(p?.doctor?.name || "")}
-                          </div>
-                          <span className=" text-[14px] text-[#475569]">
-                            {p?.doctor?.name || "—"}
-                          </span>
-                        </div>
-                      </td>
-                      {/* Status */}
-                      <td className="px-4 py-3">
-                        <span
+            <>
+              {/* ── Mobile / tablet card list ── */}
+              <div className="md:hidden divide-y divide-gray-50">
+                {patients.map((p, idx) => (
+                  <div
+                    key={p._id}
+                    onClick={() => handleSelect(p)}
+                    className={clsx(
+                      "px-4 py-3.5 cursor-pointer transition-colors",
+                      selected?.clickedPatient?._id === p._id
+                        ? "bg-teal-50/60"
+                        : "active:bg-gray-50",
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
                           className={clsx(
-                            "text-[11px] font-medium px-2.5 py-0.5 rounded-full capitalize",
-                            STATUS_MAP[p?.latestStatus] ||
-                              "bg-gray-100 text-gray-600",
+                            "w-10 h-10 rounded-full flex items-center justify-center text-[16px] font-bold shrink-0",
+                            AVATAR_COLORS[idx % AVATAR_COLORS.length],
                           )}
                         >
-                          {p?.latestStatus?.replace("_", " ") || "—"}
+                          {getInitials(p?.patientName || "")}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-[#475569] truncate">
+                            {p?.patientName || "—"}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {p?.patientAge ? `Age ${p.patientAge}` : ""}
+                            {p?.patientAge && p?.patientGender ? " · " : ""}
+                            {p?.patientGender || ""}
+                          </p>
+                        </div>
+                      </div>
+                      <span
+                        className={clsx(
+                          "text-[11px] font-medium px-2.5 py-0.5 rounded-full capitalize shrink-0",
+                          STATUS_MAP[p?.latestStatus] ||
+                            "bg-gray-100 text-gray-600",
+                        )}
+                      >
+                        {p?.latestStatus?.replace("_", " ") || "—"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3 text-xs text-[#475569]">
+                      <span className="font-mono font-bold">
+                        {p?.invoiceId}
+                      </span>
+                      <span>{formatDate(p?.latestAppointmentCreatedAt)}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-semibold text-gray-500 shrink-0">
+                          {getInitials(p?.doctor?.name || "")}
+                        </div>
+                        <span className="text-xs text-[#475569]">
+                          {p?.doctor?.name || "—"}
                         </span>
-                      </td>
-                      {/* view */}
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleSelect(p)}
-                          className="text-primary text-sm font-medium hover:underline"
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect(p);
+                        }}
+                        className="text-primary text-xs font-semibold hover:underline"
+                      >
+                        View
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* ── Desktop table ── */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full min-w-[680px]">
+                  <thead>
+                    <tr className="bg-[#F2F4F6] ">
+                      {[
+                        "Patient Name",
+                        "Invoice Id",
+                        "Date",
+                        "Doctor",
+                        "Status",
+                        "Action",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="text-left text-[11px] font-semibold text-[#64748B] uppercase tracking-wider px-4 py-3"
                         >
-                          View
-                        </button>
-                      </td>
+                          {h}
+                        </th>
+                      ))}
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50 ">
+                    {patients.map((p, idx) => (
+                      <tr
+                        key={p._id}
+                        className={clsx(
+                          "hover:bg-teal-50/40 cursor-pointer transition-colors",
+                          selected?.clickedPatient?._id === p._id &&
+                            "bg-teal-50/60",
+                        )}
+                      >
+                        {/* Name */}
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={clsx(
+                                "w-10 h-10 rounded-full flex items-center justify-center text-[16px] font-bold shrink-0",
+                                AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                              )}
+                            >
+                              {getInitials(p?.patientName || "")}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-[#475569]">
+                                {p?.patientName || "—"}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {p?.patientAge ? `Age ${p.patientAge}` : ""}
+                                {p?.patientAge && p?.patientGender ? " · " : ""}
+                                {p?.patientGender || ""}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        {/* Invoice */}
+                        <td className="px-4 py-3 text-[14px]  text-[#475569] font-mono font-bold">
+                          {p?.invoiceId}
+                        </td>
+
+                        {/* date */}
+                        <td className="px-4 py-3 text-[14px]  text-[#475569]">
+                          {formatDate(p?.latestAppointmentCreatedAt)}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-semibold text-gray-500 shrink-0">
+                              {getInitials(p?.doctor?.name || "")}
+                            </div>
+                            <span className=" text-[14px] text-[#475569]">
+                              {p?.doctor?.name || "—"}
+                            </span>
+                          </div>
+                        </td>
+                        {/* Status */}
+                        <td className="px-4 py-3">
+                          <span
+                            className={clsx(
+                              "text-[11px] font-medium px-2.5 py-0.5 rounded-full capitalize",
+                              STATUS_MAP[p?.latestStatus] ||
+                                "bg-gray-100 text-gray-600",
+                            )}
+                          >
+                            {p?.latestStatus?.replace("_", " ") || "—"}
+                          </span>
+                        </td>
+                        {/* view */}
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => handleSelect(p)}
+                            className="text-primary text-sm font-medium hover:underline"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
 
           {/* Pagination */}
           {!isLoading && !isError && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-              <span className="text-xs text-gray-400">
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-gray-100">
+              <span className="text-xs text-gray-400 text-center sm:text-left">
                 Showing{" "}
                 {total === 0 ? 0 : Math.min((page - 1) * limit + 1, total)}–
                 {Math.min(page * limit, total)} of {total} patients
               </span>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap justify-center">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
@@ -296,9 +372,9 @@ export default function AdminPatients() {
       </div>
 
       {/* ── RIGHT — Patient Detail Panel ── */}
-      <div className="w-[300px] shrink-0">
+      <div className="w-full lg:w-[300px] shrink-0">
         {!selected && !loadingDetail ? (
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center text-center h-72">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center text-center h-56 lg:h-72">
             <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3">
               <User size={22} className="text-gray-400" />
             </div>
@@ -312,7 +388,7 @@ export default function AdminPatients() {
             </p>
           </div>
         ) : loadingDetail ? (
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex items-center justify-center h-72">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 flex items-center justify-center h-56 lg:h-72">
             <p className="text-sm text-gray-400">Loading...</p>
           </div>
         ) : (
@@ -329,7 +405,7 @@ export default function AdminPatients() {
               </div>
 
               {/* Patient Name */}
-              <h2 className="mt-4 text-[30px] leading-none font-bold text-[#1E293B]">
+              <h2 className="mt-4 text-2xl sm:text-[30px] leading-none font-bold text-[#1E293B]">
                 {selected?.user?.name || "Unknown"}
               </h2>
 
@@ -360,7 +436,7 @@ export default function AdminPatients() {
                   Total Appointments
                 </p>
 
-                <h3 className="mt-2 text-3xl font-bold text-primary">
+                <h3 className="mt-2 text-2xl sm:text-3xl font-bold text-primary">
                   {selected?.totalAppointments || 0}
                 </h3>
               </div>
@@ -370,7 +446,7 @@ export default function AdminPatients() {
                   Monthly Count
                 </p>
 
-                <h3 className="mt-2 text-3xl font-bold text-primary">
+                <h3 className="mt-2 text-2xl sm:text-3xl font-bold text-primary">
                   {selected?.recentAppointments?.length || 0}
                 </h3>
               </div>
@@ -421,7 +497,7 @@ export default function AdminPatients() {
 
                 <div className="bg-[#EEF2F2] rounded-2xl p-4 border-l-4 border-primary">
                   <div className="flex items-start gap-3">
-                    <div className="bg-white rounded-xl px-3 py-2 text-center shadow-sm">
+                    <div className="bg-white rounded-xl px-3 py-2 text-center shadow-sm shrink-0">
                       <p className="text-[10px] font-bold text-red-500 uppercase">
                         {new Date(
                           selected.recentAppointments[0].createdAt,
@@ -437,12 +513,12 @@ export default function AdminPatients() {
                       </p>
                     </div>
 
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-sm font-bold text-[#1E293B]">
                         General Checkup
                       </p>
 
-                      <p className="text-xs text-[#64748B] mt-1">
+                      <p className="text-xs text-[#64748B] mt-1 truncate">
                         {selected?.recentAppointments?.[0]?.doctorId?.name} •{" "}
                         {
                           selected?.recentAppointments?.[0]?.doctorId

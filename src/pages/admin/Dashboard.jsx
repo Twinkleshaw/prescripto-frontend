@@ -86,7 +86,7 @@ const STATUS_DOTS = {
 // ── Stat Card ─────────────────────────────────────────────
 function StatCard({ icon: Icon, iconBg, iconColor, label, value, sub }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5">
       <div
         className={clsx(
           "w-11 h-10 rounded-xl flex items-center justify-center mb-3",
@@ -102,7 +102,7 @@ function StatCard({ icon: Icon, iconBg, iconColor, label, value, sub }) {
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
         {label}
       </p>
-      <p className="text-2xl font-bold text-gray-900">
+      <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
         {value ?? <span className="text-gray-300">—</span>}
       </p>
       {sub && (
@@ -130,10 +130,12 @@ export default function AdminDashboard() {
   console.log("patient", recentAppointments);
 
   return (
-    <div>
+    <div className="px-4 sm:px-0">
       {/* ── Header ── */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          Dashboard Overview
+        </h1>
         <p className="text-sm text-gray-400 mt-1">
           Welcome back, {firstName}. Here is what's happening today.
         </p>
@@ -141,21 +143,20 @@ export default function AdminDashboard() {
 
       {/* ── Stats ── */}
       {loading ? (
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="bg-white border border-gray-200 rounded-2xl p-5 animate-pulse"
+              className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 animate-pulse"
             >
               <div className="w-10 h-10 bg-gray-100 rounded-xl mb-3" />
               <div className="h-3 bg-gray-100 rounded w-24 mb-3" />
-              <div className="h-7 bg-gray-100 rounded w-20" />
               <div className="h-7 bg-gray-100 rounded w-20" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
           <StatCard
             icon={icon1}
             iconBg="bg-teal-50"
@@ -199,13 +200,13 @@ export default function AdminDashboard() {
       )}
 
       {/* ── Recent Appointments ── */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between gap-3 mb-3">
         <h2 className="text-base font-bold text-gray-900">
           Recent Appointments
         </h2>
         <button
           onClick={() => navigate("/admin/appointments")}
-          className="text-xs font-semibold text-primary hover:underline"
+          className="text-xs font-semibold text-primary hover:underline whitespace-nowrap"
         >
           View All Schedule →
         </button>
@@ -220,156 +221,259 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-center py-16 text-sm text-red-400">
             {error}
           </div>
+        ) : recentAppointments.length === 0 ? (
+          <div className="text-center py-12 text-sm text-gray-400">
+            No recent appointments.
+          </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                {[
-                  "Patient Name",
-                  "Doctor",
-                  "Department",
-                  "Date & Time",
-                  "Status",
-                  "Action",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
+          <>
+            {/* ── Mobile / tablet card list ── */}
+            <div className="md:hidden divide-y divide-gray-50">
+              {recentAppointments.map((appt, idx) => {
+                const name =
+                  appt.patientName || appt.patientId?.name || "Patient";
+                const isCancelled =
+                  appt.status === "cancelled" || appt.status === "completed";
+                const isActioning = cancellingId === appt._id;
+                const statusStyle =
+                  STATUS_STYLES[appt.status] || "bg-gray-100 text-gray-500";
+                const statusLabel = STATUS_LABELS[appt.status] || appt.status;
+                const dotColor = STATUS_DOTS[appt.status] || "bg-gray-400";
+
+                return (
+                  <div
+                    key={appt._id}
+                    className={clsx("px-4 py-3.5", isActioning && "opacity-50")}
                   >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {recentAppointments.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="text-center py-12 text-sm text-gray-400"
-                  >
-                    No recent appointments.
-                  </td>
-                </tr>
-              ) : (
-                recentAppointments.map((appt, idx) => {
-                  const name =
-                    appt.patientName || appt.patientId?.name || "Patient";
-                  const isCancelled =
-                    appt.status === "cancelled" || appt.status === "completed";
-                  const isActioning = cancellingId === appt._id;
-                  const statusStyle =
-                    STATUS_STYLES[appt.status] || "bg-gray-100 text-gray-500";
-                  const statusLabel = STATUS_LABELS[appt.status] || appt.status;
-                  const dotColor = STATUS_DOTS[appt.status] || "bg-gray-400";
-
-                  return (
-                    <tr
-                      key={appt._id}
-                      className={clsx(
-                        "hover:bg-gray-50/50 transition-colors",
-                        isActioning && "opacity-50",
-                      )}
-                    >
-                      {/* Patient */}
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={clsx(
-                              "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
-                              AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                            )}
-                          >
-                            {getInitials(name)}
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {name}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              ID: #{appt?._id?.slice(-5).toUpperCase() || "—"}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Doctor */}
-                      <td className="px-5 py-3 text-sm text-gray-700">
-                        {appt.doctorId?.name || "—"}
-                      </td>
-
-                      <td className="px-5 py-3">
-                        <span
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
                           className={clsx(
-                            "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold",
-                            getSpecialityColor(appt.doctorId?.speciality),
+                            "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                            AVATAR_COLORS[idx % AVATAR_COLORS.length],
                           )}
                         >
-                          {appt.doctorId?.speciality || "—"}
-                        </span>
-                      </td>
+                          {getInitials(name)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {name}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            ID: #{appt?._id?.slice(-5).toUpperCase() || "—"}
+                          </p>
+                        </div>
+                      </div>
 
-                      {/* Date & Time */}
-                      <td className="px-5 py-3">
+                      <button
+                        onClick={() => !isCancelled && cancelBooking(appt._id)}
+                        disabled={isCancelled || isActioning}
+                        title={
+                          isCancelled
+                            ? "Already cancelled"
+                            : "Cancel appointment"
+                        }
+                        className={clsx(
+                          "w-8 h-8 rounded-xl border flex items-center justify-center transition-colors shrink-0",
+                          isCancelled
+                            ? "border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
+                            : "border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer",
+                        )}
+                      >
+                        <Trash2
+                          size={13}
+                          className={
+                            isCancelled ? "text-gray-400" : "text-red-500"
+                          }
+                        />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-sm text-gray-700">
+                        {appt.doctorId?.name || "—"}
+                      </span>
+                      <span
+                        className={clsx(
+                          "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold",
+                          getSpecialityColor(appt.doctorId?.speciality),
+                        )}
+                      >
+                        {appt.doctorId?.speciality || "—"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div>
                         <p className="text-sm text-gray-800 font-medium">
                           {fmtDate(appt.date)}
                         </p>
                         <p className="text-xs text-gray-400">
                           {fmtTime(appt.time)}
                         </p>
-                      </td>
+                      </div>
 
-                      {/* Status */}
-                      <td className="px-5 py-3">
+                      <span
+                        className={clsx(
+                          "inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full",
+                          statusStyle,
+                        )}
+                      >
                         <span
-                          className={clsx(
-                            "inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full",
-                            statusStyle,
-                          )}
-                        >
+                          className={clsx("w-1.5 h-1.5 rounded-full", dotColor)}
+                        />
+                        {statusLabel}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── Desktop table ── */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full min-w-[760px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    {[
+                      "Patient Name",
+                      "Doctor",
+                      "Department",
+                      "Date & Time",
+                      "Status",
+                      "Action",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {recentAppointments.map((appt, idx) => {
+                    const name =
+                      appt.patientName || appt.patientId?.name || "Patient";
+                    const isCancelled =
+                      appt.status === "cancelled" ||
+                      appt.status === "completed";
+                    const isActioning = cancellingId === appt._id;
+                    const statusStyle =
+                      STATUS_STYLES[appt.status] || "bg-gray-100 text-gray-500";
+                    const statusLabel =
+                      STATUS_LABELS[appt.status] || appt.status;
+                    const dotColor = STATUS_DOTS[appt.status] || "bg-gray-400";
+
+                    return (
+                      <tr
+                        key={appt._id}
+                        className={clsx(
+                          "hover:bg-gray-50/50 transition-colors",
+                          isActioning && "opacity-50",
+                        )}
+                      >
+                        {/* Patient */}
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={clsx(
+                                "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                                AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                              )}
+                            >
+                              {getInitials(name)}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-gray-900">
+                                {name}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                ID: #{appt?._id?.slice(-5).toUpperCase() || "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Doctor */}
+                        <td className="px-5 py-3 text-sm text-gray-700">
+                          {appt.doctorId?.name || "—"}
+                        </td>
+
+                        <td className="px-5 py-3">
                           <span
                             className={clsx(
-                              "w-1.5 h-1.5 rounded-full",
-                              dotColor,
+                              "inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold",
+                              getSpecialityColor(appt.doctorId?.speciality),
                             )}
-                          />
-                          {statusLabel}
-                        </span>
-                      </td>
+                          >
+                            {appt.doctorId?.speciality || "—"}
+                          </span>
+                        </td>
 
-                      {/* Cancel action */}
-                      <td className="px-5 py-3">
-                        <button
-                          onClick={() =>
-                            !isCancelled && cancelBooking(appt._id)
-                          }
-                          disabled={isCancelled || isActioning}
-                          title={
-                            isCancelled
-                              ? "Already cancelled"
-                              : "Cancel appointment"
-                          }
-                          className={clsx(
-                            "w-8 h-8 rounded-xl border flex items-center justify-center transition-colors",
-                            isCancelled
-                              ? "border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
-                              : "border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer",
-                          )}
-                        >
-                          <Trash2
-                            size={13}
-                            className={
-                              isCancelled ? "text-gray-400" : "text-red-500"
+                        {/* Date & Time */}
+                        <td className="px-5 py-3">
+                          <p className="text-sm text-gray-800 font-medium">
+                            {fmtDate(appt.date)}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {fmtTime(appt.time)}
+                          </p>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-5 py-3">
+                          <span
+                            className={clsx(
+                              "inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full",
+                              statusStyle,
+                            )}
+                          >
+                            <span
+                              className={clsx(
+                                "w-1.5 h-1.5 rounded-full",
+                                dotColor,
+                              )}
+                            />
+                            {statusLabel}
+                          </span>
+                        </td>
+
+                        {/* Cancel action */}
+                        <td className="px-5 py-3">
+                          <button
+                            onClick={() =>
+                              !isCancelled && cancelBooking(appt._id)
                             }
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                            disabled={isCancelled || isActioning}
+                            title={
+                              isCancelled
+                                ? "Already cancelled"
+                                : "Cancel appointment"
+                            }
+                            className={clsx(
+                              "w-8 h-8 rounded-xl border flex items-center justify-center transition-colors",
+                              isCancelled
+                                ? "border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
+                                : "border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer",
+                            )}
+                          >
+                            <Trash2
+                              size={13}
+                              className={
+                                isCancelled ? "text-gray-400" : "text-red-500"
+                              }
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
