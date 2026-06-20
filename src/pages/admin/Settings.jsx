@@ -67,25 +67,25 @@ function RightPanel({ user, role }) {
           Account Info
         </p>
         <div className="divide-y divide-gray-50">
-          <div className="flex items-center justify-between py-2.5">
+          <div className="flex items-center justify-between py-2.5 gap-3">
             <span className="text-[14px] text-gray-400">Role</span>
             <span className="text-[10px] font-bold px-2.5 py-0.5 bg-teal-50 text-primary rounded-full capitalize">
               {role}
             </span>
           </div>
-          <div className="flex items-center justify-between py-2.5">
+          <div className="flex items-center justify-between py-2.5 gap-3">
             <span className="text-[14px] text-gray-400">Account ID</span>
-            <span className="text-[10px] font-mono text-gray-500">
+            <span className="text-[10px] font-mono text-gray-500 truncate">
               {user?._id?.slice(0, 6)}...{user?._id?.slice(-4)}
             </span>
           </div>
-          <div className="flex items-center justify-between py-2.5">
+          <div className="flex items-center justify-between py-2.5 gap-3">
             <span className="text-[14px] text-gray-400">Last Update</span>
-            <span className="text-[14px] font-semibold text-gray-800">
+            <span className="text-[14px] font-semibold text-gray-800 text-right">
               {fmtDate(user?.updatedAt) ?? "No updates yet"}
             </span>
           </div>
-          <div className="flex items-center justify-between py-2.5">
+          <div className="flex items-center justify-between py-2.5 gap-3">
             <span className="text-[14px] text-gray-400">Status</span>
             <span className="flex items-center gap-1.5 text-[14px] font-semibold text-primary">
               <span className="w-1.5 h-1.5 bg-primary rounded-full" />
@@ -93,9 +93,9 @@ function RightPanel({ user, role }) {
             </span>
           </div>
           {role === "doctor" && user?.speciality && (
-            <div className="flex items-center justify-between py-2.5">
+            <div className="flex items-center justify-between py-2.5 gap-3">
               <span className="text-[14px] text-gray-400">Speciality</span>
-              <span className="text-[14px] font-semibold text-gray-800">
+              <span className="text-[14px] font-semibold text-gray-800 text-right">
                 {user.speciality}
               </span>
             </div>
@@ -290,43 +290,39 @@ export default function Settings() {
     role === "admin" ? "Admin Profile Details" : "Doctor Profile Details";
 
   return (
-    <div>
+    <div className="px-3 py-4 sm:p-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
+      <div className="mb-5 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          Account Settings
+        </h1>
         <p className="text-sm text-gray-400 mt-1">
           Manage your professional credentials and clinical environment
           preferences.
         </p>
       </div>
 
-      <div className="grid grid-cols-[1fr_350px] gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6 lg:gap-10 items-start">
         {/* ── LEFT column ── */}
-        <div className=" ">
+        <div className="min-w-0">
           {/* Profile card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mb-4">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center shrink-0">
                 <User size={16} className="text-primary" />
               </div>
               <h2 className="text-sm font-bold text-gray-900">{cardTitle}</h2>
             </div>
 
             {/* Avatar */}
-            <div className="flex items-center gap-4 mb-5">
+            <div className="flex items-center gap-4 mb-5 flex-wrap">
               <div className="relative shrink-0">
                 <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
-                  {/* {avatarPreview ? ( */}
                   <img
                     src={avatarPreview}
                     alt="avatar"
                     className="w-full h-full object-cover"
                   />
-                  {/* ) : ( */}
-                  {/* <span className="text-lg font-bold text-primary">
-                      {initials}
-                    </span> */}
-                  {/* )} */}
                 </div>
                 <button
                   onClick={() => fileRef.current?.click()}
@@ -342,7 +338,7 @@ export default function Settings() {
                   onChange={handleAvatarChange}
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-900">
                   Profile Photo
                 </p>
@@ -359,7 +355,7 @@ export default function Settings() {
             </div>
 
             {/* Fields */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-[14px] font-semibold text-gray-600 mb-1.5">
                   Full name
@@ -395,7 +391,7 @@ export default function Settings() {
               </div>
 
               {/* Email — read only */}
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="block text-[14px] font-semibold text-gray-600 mb-1.5">
                   Email address
                 </label>
@@ -423,9 +419,9 @@ export default function Settings() {
           </div>
 
           {/* Password card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-5">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mb-5">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center shrink-0">
                 <Lock size={16} className="text-primary" />
               </div>
               <h2 className="text-sm font-bold text-gray-900">
@@ -464,7 +460,7 @@ export default function Settings() {
               </div>
 
               {/* New + Confirm */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[14px] font-semibold text-gray-600 mb-1.5">
                     New Password
@@ -522,10 +518,10 @@ export default function Settings() {
               </div>
 
               {/* Security box */}
-              <div className="bg-[#F2F4F6]  rounded-xl px-4 py-3">
+              <div className="bg-[#F2F4F6] rounded-xl px-4 py-3">
                 <p className="flex items-center gap-1.5 text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
                   <svg
-                    className="w-3 h-3 stroke-primary fill-none"
+                    className="w-3 h-3 stroke-primary fill-none shrink-0"
                     strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
@@ -566,7 +562,7 @@ export default function Settings() {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
             <button
               onClick={handleCancel}
               className="px-5 py-2.5 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
@@ -576,7 +572,7 @@ export default function Settings() {
             <button
               onClick={handleSaveAll}
               disabled={changingPw || updatingProfile}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-xl flex items-center gap-2 transition-colors disabled:opacity-60"
+              className="px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
             >
               {changingPw || updatingProfile ? "Saving..." : "Save Changes"}
               {!changingPw && <CheckCircle2 size={14} />}

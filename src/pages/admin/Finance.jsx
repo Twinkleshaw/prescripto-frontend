@@ -10,7 +10,7 @@ import {
   ArrowUpRight,
   Download,
 } from "lucide-react";
-import clsx from "clsx";
+
 import { exportFinanceCSV, getFinanceData } from "../../api/endpoints/invoices";
 import icon from "../../assets/admin_dash_4.png";
 
