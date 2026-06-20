@@ -1,5 +1,6 @@
 import { Bell, Settings, Plus, Menu } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 function getFormattedDate() {
   return new Date().toLocaleDateString("en-US", {
@@ -54,14 +55,24 @@ export default function DoctorNavbar({ onMenuClick = () => {} }) {
         {/* Profile chip — name/specialty collapse to just the avatar on mobile */}
         <div className="flex items-center gap-2 px-2 sm:px-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:bg-teal-50 hover:border-teal-200 transition-colors">
           <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
-            {initials}
+            {user?.image ? (
+              <img
+                src={getImageUrl(user?.image)}
+                alt={user?.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xs font-bold text-primary">
+                {initials}
+              </div>
+            )}
           </div>
-          <div className="hidden sm:block min-w-0">
+          <div className=" sm:block min-w-0">
             <p className="text-xs font-semibold text-gray-900 leading-none truncate">
               {user?.name || "Doctor"}
             </p>
             <p className="text-[10px] text-gray-400 mt-0.5 truncate">
-              {user?.specialization || "Specialist"}
+              {user?.speciality || "Specialist"}
             </p>
           </div>
         </div>

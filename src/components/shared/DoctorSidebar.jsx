@@ -19,9 +19,6 @@ const navItems = [
   { label: "Settings", icon: Settings, to: "/doctor/settings" },
 ];
 
-// `open` / `onClose` only matter below the `lg` breakpoint, where the
-// sidebar becomes an off-canvas drawer. At `lg`+ it's always visible
-// and these props are ignored.
 export default function DoctorSidebar({ open = false, onClose = () => {} }) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -30,7 +27,6 @@ export default function DoctorSidebar({ open = false, onClose = () => {} }) {
     logout();
     navigate("/login");
   };
-
   const initials =
     user?.name
       ?.split(" ")
@@ -117,9 +113,9 @@ export default function DoctorSidebar({ open = false, onClose = () => {} }) {
           <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-gray-50 cursor-pointer">
             <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-primary shrink-0">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-teal-100 shrink-0">
-                {user?.profileImage ? (
+                {user?.image ? (
                   <img
-                    src={getImageUrl(user?.profileImage)}
+                    src={getImageUrl(user?.image)}
                     alt={user?.name}
                     className="w-full h-full object-cover"
                   />

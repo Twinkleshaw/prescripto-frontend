@@ -61,6 +61,34 @@ function Skeleton({ className }) {
   );
 }
 
+// ── Status / type badges (shared between table & card views) ───────────────
+function PayTypeBadge({ type }) {
+  return (
+    <span
+      className={clsx(
+        "text-[10px] font-semibold px-2.5 py-1 rounded-full",
+        PAY_TYPE_STYLE[type] ?? "bg-gray-100 text-gray-600",
+      )}
+    >
+      {PAY_TYPE[type] ?? type ?? "—"}
+    </span>
+  );
+}
+
+function PayStatusBadge({ isPaid }) {
+  return (
+    <span
+      className={clsx(
+        "inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full",
+        isPaid ? "bg-teal-50 text-primary" : "bg-amber-50 text-amber-600",
+      )}
+    >
+      <span className="w-1 h-1 rounded-full bg-current" />
+      {isPaid ? "Paid" : "Pending"}
+    </span>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────
 export default function DoctorPayment() {
   const { data, isLoading, isError } = useQuery({
@@ -74,16 +102,18 @@ export default function DoctorPayment() {
   const bookings = d?.latestBookings ?? [];
 
   return (
-    <div>
+    <div className="px-3 py-4 sm:p-0">
       {/* ── Header ── */}
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-gray-900">Earnings Overview</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          Earnings Overview
+        </h1>
         <p className="text-sm text-gray-400 mt-1">
           Track your online payments, offline collections and completed earnings
         </p>
       </div>
 
-      <div className="sm:col-span-1 lg:col-span-3 grid grid-cols-3 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         {/* Appointments */}
         <div className="bg-white border border-gray-200 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
@@ -142,11 +172,13 @@ export default function DoctorPayment() {
         </div>
       </div>
 
-      {/* ── Payment history table ── */}
+      {/* ── Payment history ── */}
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-4 border-b border-gray-100">
           <h2 className="text-sm font-bold text-gray-900">Payment History</h2>
-          <span className="text-xs text-gray-400">From latest bookings</span>
+          <span className="text-xs text-gray-400 whitespace-nowrap">
+            From latest bookings
+          </span>
         </div>
 
         {isLoading ? (
@@ -159,116 +191,143 @@ export default function DoctorPayment() {
           <div className="flex items-center justify-center py-14 text-sm text-red-400">
             Failed to load payment data.
           </div>
+        ) : bookings.length === 0 ? (
+          <div className="text-center py-12 text-sm text-gray-400">
+            No payment records found.
+          </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                {[
-                  "Patient",
-                  "Date",
-
-                  "Payment Type",
-                  "Payment Status",
-                  "Amount",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {bookings.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="text-center py-12 text-sm text-gray-400"
-                  >
-                    No payment records found.
-                  </td>
-                </tr>
-              ) : (
-                bookings.map((b, idx) => {
-                  const isPaid = b.paymentStatus === "paid";
-                  return (
-                    <tr
-                      key={b._id}
-                      className="hover:bg-gray-50/50 transition-colors"
-                    >
-                      {/* Patient */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2.5">
-                          <div
-                            className={clsx(
-                              "w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 capitalize",
-                              AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                            )}
-                          >
-                            {getInitials(b.patientName || "")}
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900 capitalize">
-                              {b.patientName || "—"}
-                            </p>
-                            <p className="text-[10px] text-gray-400">
-                              Age: {b.patientAge ?? "—"}
-                            </p>
-                          </div>
+          <>
+            {/* ── Mobile: stacked cards ── */}
+            <div className="sm:hidden divide-y divide-gray-50">
+              {bookings.map((b, idx) => {
+                const isPaid = b.paymentStatus === "paid";
+                return (
+                  <div key={b._id} className="p-4">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className={clsx(
+                            "w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 capitalize",
+                            AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                          )}
+                        >
+                          {getInitials(b.patientName || "")}
                         </div>
-                      </td>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 capitalize truncate">
+                            {b.patientName || "—"}
+                          </p>
+                          <p className="text-[10px] text-gray-400">
+                            Age: {b.patientAge ?? "—"}
+                          </p>
+                        </div>
+                      </div>
+                      {b.amount ? (
+                        <span className="text-sm font-bold text-primary whitespace-nowrap">
+                          {fmtMoney(b.amount)}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-300">—</span>
+                      )}
+                    </div>
 
-                      {/* Date */}
-                      <td className="px-5 py-3.5 text-sm text-gray-600">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400">
                         {fmtDate(b.date)}
-                      </td>
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <PayTypeBadge type={b.paymentType} />
+                        <PayStatusBadge isPaid={isPaid} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-                      {/* Payment Type */}
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={clsx(
-                            "text-[10px] font-semibold px-2.5 py-1 rounded-full",
-                            PAY_TYPE_STYLE[b.paymentType] ??
-                              "bg-gray-100 text-gray-600",
+            {/* ── Tablet / desktop: table ── */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full min-w-[640px]">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    {[
+                      "Patient",
+                      "Date",
+                      "Payment Type",
+                      "Payment Status",
+                      "Amount",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-5 py-3"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {bookings.map((b, idx) => {
+                    const isPaid = b.paymentStatus === "paid";
+                    return (
+                      <tr
+                        key={b._id}
+                        className="hover:bg-gray-50/50 transition-colors"
+                      >
+                        {/* Patient */}
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              className={clsx(
+                                "w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 capitalize",
+                                AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                              )}
+                            >
+                              {getInitials(b.patientName || "")}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-900 capitalize truncate">
+                                {b.patientName || "—"}
+                              </p>
+                              <p className="text-[10px] text-gray-400">
+                                Age: {b.patientAge ?? "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Date */}
+                        <td className="px-5 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                          {fmtDate(b.date)}
+                        </td>
+
+                        {/* Payment Type */}
+                        <td className="px-5 py-3.5">
+                          <PayTypeBadge type={b.paymentType} />
+                        </td>
+
+                        {/* Payment Status */}
+                        <td className="px-5 py-3.5">
+                          <PayStatusBadge isPaid={isPaid} />
+                        </td>
+
+                        {/* Amount */}
+                        <td className="px-5 py-3.5">
+                          {b.amount ? (
+                            <span className="text-sm font-bold text-primary whitespace-nowrap">
+                              {fmtMoney(b.amount)}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-300">—</span>
                           )}
-                        >
-                          {PAY_TYPE[b.paymentType] ?? b.paymentType ?? "—"}
-                        </span>
-                      </td>
-
-                      {/* Payment Status */}
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={clsx(
-                            "inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full",
-                            isPaid
-                              ? "bg-teal-50 text-primary"
-                              : "bg-amber-50 text-amber-600",
-                          )}
-                        >
-                          <span className="w-1 h-1 rounded-full bg-current" />
-                          {isPaid ? "Paid" : "Pending"}
-                        </span>
-                      </td>
-
-                      {/* Amount */}
-                      <td className="px-5 py-3.5">
-                        {b.amount ? (
-                          <span className="text-sm font-bold text-primary">
-                            {fmtMoney(b.amount)}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-gray-300">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

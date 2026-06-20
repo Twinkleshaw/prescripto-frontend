@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { doctorUpdateProfile } from "../../api/endpoints/doctor";
 import { useAuthStore } from "../../store/authStore";
 import clsx from "clsx";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const DAYS = [
   "Monday",
@@ -73,7 +74,13 @@ export default function DoctorProfile() {
     googleMapLink: "",
   });
 
-  console.log(user);
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "DR";
 
   // Pre-fill from user store
   useEffect(() => {
@@ -157,12 +164,17 @@ export default function DoctorProfile() {
       {/* Doctor info card */}
       <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-center gap-4 mb-5">
         <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center text-lg font-bold text-primary shrink-0">
-          {user?.name
-            ?.split(" ")
-            .map((n) => n[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase()}
+          {user?.image ? (
+            <img
+              src={getImageUrl(user?.image)}
+              alt={user?.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-xs font-bold text-primary">
+              {initials}
+            </div>
+          )}
         </div>
         <div>
           <p className="text-base font-bold text-gray-900">{user?.name}</p>
