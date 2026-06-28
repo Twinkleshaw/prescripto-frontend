@@ -15,6 +15,32 @@ const DAYS = [
   "Sunday",
 ];
 
+// Replace the speciality Field in Step 1:
+
+const SPECIALITIES = [
+  "Others",
+  "General physician",
+  "MD",
+  "MS",
+  "Pediatrician",
+  "Cardiologist",
+  "Neurologist",
+  "Gynecologist",
+  "Gastroenterologist",
+  "Hematologist",
+  "Orthopedic",
+  "Dermatologist",
+  "Dentist",
+  "ENT specialist",
+  "Psychiatrist",
+  "Endocrinologist",
+  "Urologist",
+  "Opthalmologist",
+  "Tricholigist",
+  "Cancer specialist",
+  "Lung specialist",
+];
+
 const inputCls =
   "w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 outline-none focus:border-primary focus:bg-white transition-colors";
 
@@ -79,6 +105,7 @@ export default function EditDoctorModal({ doctor, onClose }) {
 
   // Pre-fill form with existing doctor data
   const [form, setForm] = useState({
+    nameBengali: "",
     speciality: "",
     specialityBengali: "",
     degree: "",
@@ -113,6 +140,7 @@ export default function EditDoctorModal({ doctor, onClose }) {
     if (!doctor) return;
     setImagePreview(getImageUrl(doctor?.image) || null);
     setForm({
+      nameBengali: doctor.nameBengali ?? "",
       speciality: doctor.speciality ?? "",
       specialityBengali: doctor.specialityBengali ?? "",
       degree: doctor.degree ?? "",
@@ -265,18 +293,58 @@ export default function EditDoctorModal({ doctor, onClose }) {
           {step === 1 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Speciality">
-                <input
-                  value={form.speciality}
-                  onChange={(e) => set("speciality", e.target.value)}
-                  placeholder="Enter speciality (e.g. Cardiology)"
+                <select
+                  value={
+                    SPECIALITIES.includes(form.speciality)
+                      ? form.speciality
+                      : form.speciality
+                        ? "Others"
+                        : ""
+                  }
+                  onChange={(e) => {
+                    if (e.target.value === "Others") {
+                      set("speciality", "Others");
+                    } else {
+                      set("speciality", e.target.value);
+                    }
+                  }}
                   className={inputCls}
-                />
+                >
+                  <option value="" disabled>
+                    Select speciality
+                  </option>
+                  {SPECIALITIES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+
+                {(form.speciality === "Others" ||
+                  (!SPECIALITIES.includes(form.speciality) &&
+                    form.speciality)) && (
+                  <input
+                    value={form.speciality === "Others" ? "" : form.speciality}
+                    onChange={(e) => set("speciality", e.target.value)}
+                    placeholder="Enter speciality..."
+                    className={clsx(inputCls, "mt-2")}
+                    autoFocus
+                  />
+                )}
               </Field>
               <Field label="Speciality (Bengali)">
                 <input
                   value={form.specialityBengali}
                   onChange={(e) => set("specialityBengali", e.target.value)}
                   placeholder="বিশেষত্ব"
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Name (Bengali)">
+                <input
+                  value={form.nameBengali}
+                  onChange={(e) => set("nameBengali", e.target.value)}
+                  placeholder="ডাক্তারের নাম"
                   className={inputCls}
                 />
               </Field>

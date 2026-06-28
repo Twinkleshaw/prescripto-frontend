@@ -1,6 +1,7 @@
 import api from "../axiosInstance";
 
-export const doctorList = () => api.get("admin/doctors");
+export const doctorList = ({ page, limit }) =>
+  api.get("admin/doctors", { params: { page, limit } });
 export const deleteDoctor = (id) => api.delete(`admin/doctor/${id}`);
 export const createDoctor = (data) => api.post("/auth/create-doctor", data);
 
