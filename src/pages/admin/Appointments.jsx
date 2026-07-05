@@ -108,9 +108,9 @@ function ActionMenu({ appt, onComplete, onCancel, loadingId }) {
       <button
         onClick={() => setOpen((o) => !o)}
         disabled={isLoading || isDone}
-        className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40 transition-colors"
+        className="w-7 h-7 rounded-lg border border-gray-400 flex items-center justify-center hover:bg-gray-50 disabled:opacity-40 transition-colors"
       >
-        <MoreVertical size={13} className="text-gray-400" />
+        <MoreVertical size={13} className="text-gray-700" />
       </button>
 
       {open && (

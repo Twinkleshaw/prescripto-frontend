@@ -548,14 +548,14 @@ export default function DoctorAppointments() {
                               className={clsx(
                                 "w-7 h-7 rounded-lg border flex items-center justify-center transition-colors",
                                 isDone
-                                  ? "border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
-                                  : "border-teal-200 bg-teal-50 hover:bg-teal-100 cursor-pointer",
+                                  ? "border-gray-400 bg-gray-50 opacity-40 cursor-not-allowed"
+                                  : "border-teal-400 bg-teal-50 hover:bg-teal-100 cursor-pointer",
                               )}
                             >
                               <CheckCircle2
                                 size={13}
                                 className={
-                                  isDone ? "text-gray-400" : "text-primary"
+                                  isDone ? "text-gray-700" : "text-primary"
                                 }
                               />
                             </button>
@@ -568,14 +568,14 @@ export default function DoctorAppointments() {
                               className={clsx(
                                 "w-7 h-7 rounded-lg border flex items-center justify-center transition-colors",
                                 isDone
-                                  ? "border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
-                                  : "border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer",
+                                  ? "border-gray-400 bg-gray-50 opacity-40 cursor-not-allowed"
+                                  : "border-red-400 bg-red-50 hover:bg-red-100 cursor-pointer",
                               )}
                             >
                               <XCircle
                                 size={13}
                                 className={
-                                  isDone ? "text-gray-400" : "text-red-500"
+                                  isDone ? "text-gray-700" : "text-red-700"
                                 }
                               />
                             </button>

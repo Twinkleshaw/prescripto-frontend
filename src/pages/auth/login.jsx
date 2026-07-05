@@ -109,12 +109,13 @@ export default function Login() {
               />
               Keep me signed in
             </label>
-            {/* <button
+            <button
               type="button"
+              onClick={() => navigate("/forgot-password")}
               className="text-sm font-semibold text-primary hover:underline"
             >
               Forgot password?
-            </button> */}
+            </button>
           </div>
 
           {/* Error */}

@@ -6,6 +6,7 @@ import {
   Loader2,
   FileText,
   Download,
+  Search,
 } from "lucide-react";
 import { downloadInvoicePDF, getInvoices } from "../../api/endpoints/invoices";
 
@@ -99,6 +100,7 @@ export default function Invoices() {
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [downloading, setDownloading] = useState(null);
+  const [invoiceSearch, setInvoiceSearch] = useState("");
 
   const fetchInvoices = useCallback(async () => {
     setLoading(true);
@@ -140,10 +142,17 @@ export default function Invoices() {
     }
   };
 
-  const filtered =
-    filter === "all"
-      ? invoices
-      : invoices.filter((inv) => inv.paymentStatus?.toLowerCase() === filter);
+  const filtered = invoices
+    .filter((inv) =>
+      filter === "all" ? true : inv.paymentStatus?.toLowerCase() === filter,
+    )
+    .filter((inv) =>
+      invoiceSearch.trim()
+        ? String(inv.invoiceId)
+            .toLowerCase()
+            .includes(invoiceSearch.trim().toLowerCase())
+        : true,
+    );
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const start = (page - 1) * PER_PAGE;
@@ -153,25 +162,46 @@ export default function Invoices() {
     setFilter(key);
     setPage(1);
   };
+  const handleSearchChange = (value) => {
+    setInvoiceSearch(value);
+    setPage(1);
+  };
 
   return (
     <div className="p-3 sm:p-6">
       {/* Tabs — horizontally scrollable on small screens */}
-      <div className="flex items-center mb-4 sm:mb-5 -mx-3 px-3 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
-        <div className="flex gap-1 bg-gray-100 rounded-full p-1 w-max">
-          {TABS.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => handleFilterChange(key)}
-              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
-                filter === key
-                  ? "bg-white text-gray-900 shadow-sm border border-gray-200"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+      <div className="flex flex-col gap-3 mb-4 sm:mb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center -mx-3 px-3 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
+          <div className="flex gap-1 bg-gray-100 rounded-full p-1 w-max">
+            {TABS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handleFilterChange(key)}
+                className={`px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
+                  filter === key
+                    ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Search by invoice ID */}
+        <div className="relative w-full sm:w-[220px]">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            value={invoiceSearch}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="Search invoice ID..."
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary"
+          />
         </div>
       </div>
 

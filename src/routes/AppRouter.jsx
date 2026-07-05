@@ -17,6 +17,7 @@ import Invoices from "../pages/admin/Invoices";
 import JoinAsDoctor from "../pages/JoinAsDoctor";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
+import ContactFAQ from "../pages/auth/ForgotPassword";
 
 export default function AppRouter() {
   return (
@@ -27,6 +28,7 @@ export default function AppRouter() {
         <Route path="/join-as-doctor" element={<JoinAsDoctor />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/forgot-password" element={<ContactFAQ />} />
 
         {/* Admin */}
         <Route

@@ -7,6 +7,7 @@ import {
   Info,
   ChevronLeft,
   ChevronRight,
+  Search,
 } from "lucide-react";
 import clsx from "clsx";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,18 +24,23 @@ import { getImageUrl } from "../../utils/getImageUrl";
 export default function AdminDoctors() {
   const [page, setPage] = useState(1);
   const [showAddModal, setAddModal] = useState(false);
-  const [editDoctor, setEditDoctor] = useState(null); // holds the doctor object to edit
+  const [editDoctor, setEditDoctor] = useState(null);
+  const [search, setSearch] = useState(""); // holds the doctor object to edit
   const limit = 10;
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["doctors", page],
-    queryFn: () => doctorList({ page, limit }),
+    queryKey: ["doctors", page, search],
+    queryFn: () =>
+      doctorList({
+        page,
+        limit,
+        search,
+      }),
     keepPreviousData: true,
   });
-
   const doctors = data?.data?.doctors ?? [];
-  const total = data?.data?.total ?? 0;
+  const total = data?.data?.totalDoctors ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   const handleExport = async () => {
@@ -82,6 +88,7 @@ export default function AdminDoctors() {
             Practitioner Registry
           </h1>
         </div>
+
         <div className="flex gap-2">
           <button
             onClick={handleExport}
@@ -95,6 +102,25 @@ export default function AdminDoctors() {
           >
             <Plus size={13} /> Add Doctor
           </button>
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <div className="relative w-full sm:max-w-sm">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search Practitioner..."
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary"
+          />
         </div>
       </div>
       {/* Summary stats — separate cards with hover green left border */}
@@ -115,7 +141,7 @@ export default function AdminDoctors() {
             Active Surgeons
           </p>
           <p className="text-2xl font-bold text-gray-900">
-            {doctors.filter((d) => d.availabilityStatus).length}
+            {data?.data?.activeDoctors}
           </p>
           {/* <p className="text-xs text-gray-400 mt-1">Capacity 88%</p> */}
         </div>

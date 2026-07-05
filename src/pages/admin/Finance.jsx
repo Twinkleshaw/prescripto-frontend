@@ -9,6 +9,7 @@ import {
   CreditCard,
   ArrowUpRight,
   Download,
+  Search,
 } from "lucide-react";
 
 import { exportFinanceCSV, getFinanceData } from "../../api/endpoints/invoices";
@@ -69,6 +70,7 @@ export default function Finance() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [txnSearch, setTxnSearch] = useState("");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -137,8 +139,22 @@ export default function Finance() {
     );
   }
 
-  const payments = data?.payments || [];
+  const allPayments = data?.payments || [];
   const doctorPayments = data?.doctorPayments || [];
+
+  const payments = txnSearch.trim()
+    ? allPayments.filter((pay) => {
+        const txnId =
+          pay?.paymentResponse?.data?.transactionId ||
+          pay?.paymentResponse?.transactionId ||
+          pay?.transactionId ||
+          "";
+        return String(txnId)
+          .toLowerCase()
+          .includes(txnSearch.trim().toLowerCase());
+      })
+    : allPayments;
+
   const totalPages = Math.ceil(payments.length / PER_PAGE);
   const start = (page - 1) * PER_PAGE;
   const pageRows = payments.slice(start, start + PER_PAGE);
@@ -277,22 +293,43 @@ export default function Finance() {
 
         {/* Payments Table */}
         <div className="lg:col-span-2">
-          <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[11px] font-semibold tracking-widest text-gray-500 uppercase">
               Pending Approvals
             </p>
-            <button
-              onClick={handleExportCSV}
-              disabled={exporting}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#006860] hover:bg-teal-100 border border-teal-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {exporting ? (
-                <Loader2 size={13} className="animate-spin" />
-              ) : (
-                <Download size={13} />
-              )}
-              {exporting ? "Exporting…" : "Export CSV"}
-            </button>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              {/* transaction ID search */}
+              <div className="relative w-full sm:w-[220px]">
+                <Search
+                  size={13}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                />
+                <input
+                  type="text"
+                  value={txnSearch}
+                  onChange={(e) => {
+                    setPage(1);
+                    setTxnSearch(e.target.value);
+                  }}
+                  placeholder="Search transaction ID..."
+                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+
+              <button
+                onClick={handleExportCSV}
+                disabled={exporting}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#006860] hover:bg-teal-100 border border-teal-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed w-full sm:w-auto"
+              >
+                {exporting ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <Download size={13} />
+                )}
+                {exporting ? "Exporting…" : "Export CSV"}
+              </button>
+            </div>
           </div>
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
             {pageRows.length === 0 ? (
@@ -309,7 +346,7 @@ export default function Finance() {
                     const style =
                       STATUS_STYLES[status] || STATUS_STYLES.pending;
                     const color = getAvatarColor(pay.patientName || "");
-                    const txId = `#VT-TXN-${String(pay._id).slice(-5).toUpperCase()}`;
+                    const txId = `#VT-TXN-${String(pay?.paymentResponse?.transactionId).slice(-5).toUpperCase()}`;
 
                     return (
                       <div key={pay._id} className="px-4 py-3.5">
@@ -392,7 +429,12 @@ export default function Finance() {
                         const style =
                           STATUS_STYLES[status] || STATUS_STYLES.pending;
                         const color = getAvatarColor(pay.patientName || "");
-                        const txId = `#VT-TXN-${String(pay._id).slice(-5).toUpperCase()}`;
+                        const txId = `#VT-TXN-${String(
+                          pay?.paymentResponse?.data?.transactionId ||
+                            pay?.transactionId,
+                        )
+                          .slice(-5)
+                          .toUpperCase()}`;
 
                         return (
                           <tr
