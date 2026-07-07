@@ -27,11 +27,11 @@ const FAQS = [
   },
   {
     q: "Can I get support in a language other than English?",
-    a: "Yes, our email support team can assist in English and Spanish. Let us know your preference when you write in.",
+    a: "Yes, our email support team can assist in English, Hindi and Bengali. Let us know your preference when you write in.",
   },
   {
     q: "Do you offer support for billing questions?",
-    a: "Billing questions are handled by the same team. Email hello@theme.com with your account details and we'll sort it out.",
+    a: "Billing questions are handled by the same team. Email info@prescriptoadmin.com with your account details and we'll sort it out.",
   },
 ];
 
