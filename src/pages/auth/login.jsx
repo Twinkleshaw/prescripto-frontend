@@ -151,9 +151,9 @@ export default function Login() {
             </span>
             <span
               className="text-xs text-gray-400 cursor-pointer hover:text-gray-600"
-              onClick={() => navigate("/refund-policy")}
+              onClick={() => navigate("/terms")}
             >
-              Refund Policy
+              Terms And Conditions
             </span>
           </div>
         </div>

@@ -27,7 +27,7 @@ export default function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/join-as-doctor" element={<JoinAsDoctor />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/terms" element={<RefundPolicy />} />
         <Route path="/forgot-password" element={<ContactFAQ />} />
 
         {/* Admin */}
