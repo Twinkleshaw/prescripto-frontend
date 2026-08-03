@@ -18,6 +18,7 @@ import JoinAsDoctor from "../pages/JoinAsDoctor";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import RefundPolicy from "../pages/RefundPolicy";
 import ContactFAQ from "../pages/auth/ForgotPassword";
+import OriginalRefund from "../pages/OriginalRefund";
 
 export default function AppRouter() {
   return (
@@ -28,6 +29,7 @@ export default function AppRouter() {
         <Route path="/join-as-doctor" element={<JoinAsDoctor />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<RefundPolicy />} />
+        <Route path="/refund-cancellation" element={<OriginalRefund />} />
         <Route path="/forgot-password" element={<ContactFAQ />} />
 
         {/* Admin */}
