@@ -346,7 +346,13 @@ export default function Finance() {
                     const style =
                       STATUS_STYLES[status] || STATUS_STYLES.pending;
                     const color = getAvatarColor(pay.patientName || "");
-                    const txId = `#VT-TXN-${String(pay?.paymentResponse?.transactionId).slice(-5).toUpperCase()}`;
+                    const txId = `#VT-TXN-${String(
+                      pay?.paymentResponse?.data?.transactionId ||
+                        pay?.paymentResponse?.transactionId ||
+                        pay?.transactionId,
+                    )
+                      .slice(-5)
+                      .toUpperCase()}`;
 
                     return (
                       <div key={pay._id} className="px-4 py-3.5">
